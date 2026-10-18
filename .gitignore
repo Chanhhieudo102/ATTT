@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+artifacts/models/**/*.joblib
+artifacts/models/**/*.pt
+artifacts/reports/**/*.png
+artifacts/reports/**/*.csv
+artifacts/reports/**/*.json
+artifacts/reports/**/*.jsonl
+artifacts/reports/**/*.pml
+artifacts/logs/*.jsonl
+artifacts/quarantine/
+data/observations/*.csv
+data/fixtures/synthetic_demo/*.csv

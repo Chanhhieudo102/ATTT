@@ -1,0 +1,145 @@
+Ứng dụng học máy trong nhận diện các tiến trình mã độc đang hoạt động trong máy  
+
+* Hiếu + Huy: Cần chọn bộ dữ liệu chuẩn dataset về malware (?); phân tích EDA; chọn mô hình ML để huấn luyện. 
+
+1) Mục đích 
+
+Hiểu các đặc điểm, hành vi bất thường của tiến trình (process) mã độc đang chạy trên hệ điều hành, phân biệt với tiến trình hợp lệ. 
+
+Nắm được các nguồn thông tin/đặc trưng có thể thu thập được từ tiến trình đang hoạt động (CPU/RAM sử dụng, số lượng thread, kết nối mạng, các API/system call gọi, cây tiến trình cha-con, đường dẫn file thực thi...) phục vụ phát hiện bất thường. 
+
+Xây dựng được chương trình giám sát tiến trình theo thời gian thực, kết hợp mô hình học máy để phân loại/phát hiện tiến trình khả nghi là mã độc. 
+
+Thực hành đánh giá mô hình trên dữ liệu tự thu thập, kiểm thử với các mẫu tiến trình mô phỏng hành vi độc hại trong môi trường an toàn. 
+
+2) Các bước thực hiện 
+
+Giai đoạn 1: Tìm hiểu lý thuyết cơ sở 
+
+Tìm hiểu cách nhận diện tiến trình mã độc  
+
+Tìm hiểu các đặc điểm hành vi thường gặp ở tiến trình mã độc: tên tiến trình giả mạo tiến trình hệ thống (process masquerading, VD: svch0st.exe giả svchost.exe), tiến trình chạy từ đường dẫn bất thường (thư mục Temp, AppData thay vì System32/Program Files), tiến trình không có chữ ký số (unsigned binary) hoặc chữ ký không hợp lệ, tiến trình có hành vi tự khởi động cùng hệ thống (persistence qua Registry Run key, Scheduled Task), tiến trình tạo nhiều kết nối mạng ra ngoài bất thường (C2 communication), tiến trình có mức sử dụng CPU/RAM bất thường (đào coin/ransomware mã hóa hàng loạt file), tiến trình injection vào tiến trình khác (process hollowing/injection). 
+
+Tìm hiểu công cụ tham khảo hành vi mã độc thực tế: Sysinternals Suite (Process Explorer, Process Monitor - ProcMon), MITRE ATT&CK (các Technique liên quan Execution/Persistence/Defense Evasion/Process Injection). 
+
+Tìm hiểu sự khác biệt giữa phát hiện dựa trên chữ ký tĩnh (hash/tên file — dễ bị né tránh) và phát hiện dựa trên hành vi runtime (khó né tránh hơn, phù hợp với hướng tiếp cận ML của đề tài). 
+
+Giai đoạn 2: Xây dựng chương trình giám sát tiến trình 
+
+Thiết kế kiến trúc chương trình  
+
+Xác định các module chính: Process Monitor (thu thập thông tin tiến trình theo thời gian thực), Feature Extractor (trích xuất đặc trưng từ thông tin thu thập), ML Classifier (mô hình phân loại/phát hiện bất thường), Alert/Report Module (cảnh báo, ghi log, xử lý khi phát hiện tiến trình khả nghi). 
+
+Xây dựng chương trình quản lý và giám sát tiến trình  
+
+Sử dụng Python với thư viện psutil (đa nền tảng) để liệt kê toàn bộ tiến trình đang chạy, thu thập thông tin: PID, tên tiến trình, đường dẫn file thực thi, tiến trình cha (PPID), thời gian khởi tạo, mức sử dụng CPU/RAM, số lượng thread, số file handle đang mở, danh sách kết nối mạng (IP/port đang kết nối) của từng tiến trình. 
+
+(Windows) Bổ sung thu thập thông tin nâng cao qua Sysmon (nếu cài đặt): Process Creation (Event ID 1) kèm command line đầy đủ, Network Connection (Event ID 3), thông tin chữ ký số của file thực thi. 
+
+Xây dựng giao diện hiển thị: danh sách tiến trình đang chạy dạng bảng/cây (Process Tree thể hiện quan hệ cha-con), cập nhật theo thời gian thực (VD: mỗi 2–5 giây quét lại). 
+
+Xây dựng chức năng phân tích thủ công cơ bản (rule-based ban đầu)  
+
+Trước khi áp dụng ML, xây dựng vài quy tắc kiểm tra đơn giản làm nền: kiểm tra tiến trình có đường dẫn thực thi nằm ngoài các thư mục tin cậy (Windows, Program Files) không, kiểm tra tên tiến trình có gần giống nhưng khác tiến trình hệ thống hợp lệ không (phát hiện tương tự chuỗi - string similarity/typosquatting), kiểm tra tiến trình có chữ ký số hợp lệ không. 
+
+Các quy tắc này vừa dùng độc lập, vừa có thể trở thành đặc trưng đầu vào cho mô hình ML ở bước sau. 
+
+Giai đoạn 3: Thu thập dữ liệu và trích xuất đặc trưng cho ML 
+
+Thu thập dữ liệu huấn luyện  
+
+Dữ liệu tiến trình lành tính (benign): thu thập từ hệ thống đang hoạt động bình thường (các tiến trình hệ thống, ứng dụng văn phòng, trình duyệt... chạy trong điều kiện thông thường). 
+
+Dữ liệu tiến trình mã độc (malicious):  
+
+Cách an toàn nhất: sử dụng Atomic Red Team hoặc kịch bản mô phỏng hành vi mã độc (không phải mã độc thật) để tạo ra tiến trình có hành vi tương tự kỹ thuật tấn công thực tế (VD: mô phỏng process injection, persistence, tạo kết nối mạng đáng ngờ) trong máy ảo cô lập. 
+
+Chạy các mẫu mã độc đã biết từ bộ dữ liệu nghiên cứu học thuật (VD: EMBER, VirusShare — chỉ dùng cho mục đích nghiên cứu) trong máy ảo hoàn toàn cô lập (Sandbox, snapshot revert sau mỗi lần thử) để thu thập log tiến trình thật, tuyệt đối không thực hiện trên máy cá nhân/máy không cách ly. 
+
+Gán nhãn rõ ràng cho từng bản ghi tiến trình thu thập được (benign/malicious). 
+
+Trích xuất đặc trưng (Feature Engineering)  
+
+Đặc trưng tĩnh: đường dẫn file thực thi (mã hóa dạng one-hot theo thư mục tin cậy/không tin cậy), có chữ ký số hợp lệ hay không, độ dài command line, entropy của tên file. 
+
+Đặc trưng hành vi runtime: mức sử dụng CPU/RAM trung bình và đỉnh, số lượng thread, số file handle mở, số kết nối mạng đồng thời, số tiến trình con được tạo ra, tần suất đọc/ghi file, có hành vi truy cập Registry key nhạy cảm không (Run key...). 
+
+Đặc trưng quan hệ tiến trình: tiến trình cha có bất thường không (VD: Word/Excel spawn cmd.exe/powershell.exe là dấu hiệu đáng ngờ — kỹ thuật LOLBins). 
+
+Chuẩn hóa, mã hóa đặc trưng thành dạng vector phù hợp đưa vào mô hình ML. 
+
+Giai đoạn 4: Xây dựng và đánh giá mô hình ML 
+
+Xây dựng mô hình phân loại (Supervised Learning)  
+
+Huấn luyện các thuật toán: Decision Tree, Random Forest, XGBoost, hoặc mạng neural đơn giản (MLP) để phân loại tiến trình lành tính/độc hại dựa trên đặc trưng đã trích xuất. 
+
+Đánh giá bằng Accuracy, Precision, Recall, F1-score, Confusion Matrix (chú trọng Recall để hạn chế bỏ sót mã độc). 
+
+Xây dựng mô hình phát hiện bất thường (Unsupervised/Anomaly Detection)  
+
+Áp dụng Isolation Forest/One-Class SVM/Autoencoder huấn luyện trên dữ liệu tiến trình bình thường, dùng để phát hiện tiến trình có hành vi lệch chuẩn không cần biết trước nhãn cụ thể — hữu ích để phát hiện tiến trình mã độc mới/chưa từng gặp. 
+
+So sánh hiệu quả giữa hướng tiếp cận supervised (chính xác cao với mẫu đã biết) và unsupervised (khái quát tốt hơn với mẫu mới). 
+
+So sánh và phân tích kết quả  
+
+Tổng hợp bảng so sánh các mô hình, phân tích đặc trưng quan trọng nhất góp phần phát hiện đúng (feature importance). 
+
+Xác định mô hình phù hợp nhất để tích hợp vào chương trình giám sát thời gian thực (cân nhắc độ chính xác và tốc độ suy luận, vì cần chạy liên tục theo thời gian thực). 
+
+Giai đoạn 5: Tích hợp và kiểm thử hệ thống hoàn chỉnh 
+
+Tích hợp mô hình ML vào chương trình giám sát tiến trình  
+
+Chương trình giám sát (đã xây ở bước 3) định kỳ trích xuất đặc trưng của từng tiến trình đang chạy, đưa vào mô hình ML đã huấn luyện để dự đoán. 
+
+Khi phát hiện tiến trình khả nghi: ghi log chi tiết (PID, tên, đường dẫn, điểm số nghi ngờ từ mô hình), hiển thị cảnh báo trên giao diện (đổi màu/đánh dấu trong danh sách/cây tiến trình), có thể cho phép người dùng lựa chọn hành động (kết thúc tiến trình, cách ly file, bỏ qua). 
+
+Kiểm thử hệ thống  
+
+Chạy chương trình trên máy thử nghiệm (VM), thực hiện các kịch bản mô phỏng hành vi mã độc (qua Atomic Red Team hoặc script tự viết mô phỏng process injection/persistence đơn giản) để kiểm tra khả năng phát hiện. 
+
+Đo tỷ lệ phát hiện đúng (True Positive), báo động giả (False Positive) khi chạy song song với các ứng dụng hợp lệ thông thường (trình duyệt, Office, IDE...) để đảm bảo không gây phiền nhiễu quá mức. 
+
+Đo mức tài nguyên tiêu tốn của chính chương trình giám sát (đảm bảo không ảnh hưởng đáng kể đến hiệu năng máy khi chạy nền liên tục). 
+
+(Tùy chọn nâng cao)  
+
+Bổ sung khả năng phát hiện Process Injection (so sánh vùng nhớ tiến trình với module đã load hợp lệ). 
+
+Tích hợp kiểm tra hash file thực thi với cơ sở dữ liệu hash công khai (tương tự đề tài diệt virus) để kết hợp cả signature-based và behavior-based. 
+
+Xây dựng cơ chế tự động cách ly (tạm dừng/kết thúc) tiến trình có điểm nghi ngờ vượt ngưỡng cao, có xác nhận từ người dùng trước khi thực hiện. 
+
+3) Yêu cầu kết quả đạt được 
+
+Chương trình giám sát tiến trình hoạt động ổn định, hiển thị đầy đủ thông tin và quan hệ cha-con của các tiến trình đang chạy theo thời gian thực. 
+
+Xây dựng thành công bộ dữ liệu huấn luyện có gán nhãn (tiến trình lành tính/mô phỏng hành vi độc hại) thu thập an toàn trong môi trường lab. 
+
+Huấn luyện và đánh giá thành công tối thiểu 3–4 mô hình học máy (bao gồm cả supervised và unsupervised), có bảng so sánh chỉ số đánh giá rõ ràng. 
+
+Tích hợp thành công mô hình vào chương trình giám sát, phát hiện chính xác các tiến trình mô phỏng hành vi mã độc trong kịch bản kiểm thử. 
+
+Có báo cáo minh chứng: log phát hiện, ảnh chụp giao diện cảnh báo, số liệu đánh giá độ chính xác và hiệu năng hệ thống khi chạy nền. 
+
+Mã nguồn đầy đủ (chương trình giám sát tiến trình, notebook huấn luyện mô hình, module tích hợp), có tài liệu mô tả kiến trúc và hướng dẫn sử dụng. 
+
+4) Tài liệu tham khảo 
+
+Sysinternals Suite (Process Explorer, Process Monitor): https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite 
+
+Python psutil Documentation (thu thập thông tin tiến trình đa nền tảng): https://psutil.readthedocs.io/ 
+
+Sysmon Documentation: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon 
+
+Atomic Red Team (mô phỏng kỹ thuật tấn công an toàn): https://github.com/redcanaryco/atomic-red-team 
+
+MITRE ATT&CK Framework (tham khảo kỹ thuật Process Injection, Persistence, Execution): https://attack.mitre.org/ 
+
+scikit-learn Documentation: https://scikit-learn.org/stable/ 
+
+scikit-learn – Outlier Detection (Isolation Forest, One-Class SVM): https://scikit-learn.org/stable/modules/outlier_detection.html 
+
+EMBER Dataset (tham khảo đặc trưng file thực thi PE): https://github.com/elastic/ember 
