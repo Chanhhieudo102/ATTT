@@ -64,7 +64,9 @@ class ProcessCollector:
                     "remote": str(conn.raddr) if conn.raddr else "",
                     "status": str(conn.status or ""),
                 })
-        except (psutil.AccessDenied, psutil.Error, OSError):
+        except (psutil.AccessDenied, psutil.Error, OSError, RuntimeError):
+            # Windows may raise a native RuntimeError when TCP table access is
+            # restricted. Keep the process snapshot available without sockets.
             pass
 
         try:

@@ -1,4 +1,4 @@
-﻿# ProcessGuard — giám sát tiến trình và nhận diện hành vi đáng ngờ
+# ProcessGuard — giám sát tiến trình và nhận diện hành vi đáng ngờ
 
 Đồ án **Ứng dụng học máy trong nhận diện các tiến trình mã độc đang hoạt động trong máy**. Dự án hiện có ứng dụng desktop và dashboard web để xem tiến trình, cây cha-con, tín hiệu rule-based và cảnh báo. Phần nghiên cứu ML dùng dataset telemetry Cardiff ở cấp **lần chạy executable**; phần chấm điểm PID live là luồng riêng, chỉ dùng được sau khi nhóm thu thập và gán nhãn dữ liệu tiến trình trong lab.
 
@@ -191,11 +191,17 @@ Chương trình lưu quan sát tiến trình live với nhãn benign hoặc simu
 
 Quy trình thu thập trong desktop: chạy `python main.py` trong VM lab, chọn tiến trình, tùy chọn kiểm tra chữ ký/hash/Run keys/Scheduled Tasks và Sysmon, rồi lưu quan sát benign hoặc simulated malicious kèm nguồn gán nhãn. Collector lấy rolling average/peak từ tối đa 5 lần quét gần nhất; lưu nhiều snapshot khi kịch bản đang chạy để ghi nhận diễn biến. Safe workload hiện tại dùng Python child process nên một executable path không đủ cho grouped split; cần executable riêng đã xác minh cho **mỗi lớp** hoặc thêm tình huống/ứng dụng khác. Không sao chép cùng binary sang nhiều đường dẫn để giả tạo tính độc lập. Chỉ gán nhãn simulated malicious cho tiến trình thuộc kịch bản mô phỏng đã xác minh; workload safe không phải malware hay injection.
 
+Có thể thu thập tự động nhiều snapshot cho PID được chỉ định bằng `python scripts/collect_pid_samples.py --pid 1234 --label 0 --label-source "VM01/benign/run01" --duration 60`. Tool lưu mỗi phiên vào CSV và JSON riêng trong `data/observations/`, kiểm tra PID/create-time và không tự xác nhận nhãn. Xem [quy trình lab](docs/LAB_WORKFLOW.md) để thu thập, huấn luyện và nghiệm thu.
+
 Sau khi có `data/observations/collected_samples.csv` đủ dữ liệu, chạy:
 
     python scripts/train_pid_models.py
 
-Pipeline PID yêu cầu cả hai nhãn, `label_source` không rỗng và tối thiểu hai executable path khác nhau mỗi nhãn; chia train/test theo process_path để tránh cùng executable lọt vào hai phía. Pipeline so sánh Decision Tree, Random Forest, Extra Trees, Isolation Forest, xuất Accuracy/Precision/Recall/F1/FPR, confusion matrix, feature importance, `label_source_audit.csv` và `dataset_summary.json` vào `artifacts/reports/pid_live/`; model vào `artifacts/models/pid_live/`. Model chỉ có ý nghĩa tương ứng với chất lượng nhãn/độ đa dạng tập thu thập. CSV cũ cần bổ sung nguồn nhãn hoặc thu thập lại; thiếu các cột feature mới thì cũng cần thu thập lại.
+Hoặc truyền nhiều CSV phiên đã xác minh bằng `--source session_benign.csv session_simulated.csv ...`. Mỗi file chỉ truyền một lần, không gộp trùng cùng dữ liệu qua nhiều file.
+
+Pipeline PID yêu cầu cả hai nhãn, `label_source` không rỗng và tối thiểu ba executable path khác nhau mỗi nhãn; chia train/validation/test theo process_path để tránh cùng executable lọt vào nhiều tập, chọn model theo F1 validation. Pipeline so sánh Decision Tree, Random Forest, Extra Trees, Isolation Forest, xuất Accuracy/Precision/Recall/F1/FPR, confusion matrix, feature importance, `label_source_audit.csv`, `split_manifest.csv` và `dataset_summary.json` vào `artifacts/reports/pid_live/`; model vào `artifacts/models/pid_live/`. Model chỉ có ý nghĩa tương ứng với chất lượng nhãn/độ đa dạng tập thu thập. CSV cũ cần bổ sung nguồn nhãn hoặc thu thập lại; thiếu các cột feature mới thì cũng cần thu thập lại.
+
+Metric PID sử dụng cùng hàm score và ngưỡng 0,65 với live; Isolation Forest dùng điểm sigmoid (không phải xác suất). Chọn model supervised bằng validation, test chỉ để báo cáo. Metric ML-only không thay thế đánh giá cảnh báo kết hợp rule+ML. Pipeline từ chối feature thiếu/không hữu hạn thay vì âm thầm bỏ hàng hoặc điền 0.
 
 **Trạng thái hiện tại:** chức năng thu thập và pipeline đã có, nhưng chưa có metric PID lab nào được báo cáo ở README vì chưa có dataset PID nhóm xác minh. Không dùng metric Cardiff hay synthetic để thay thế kết quả đó.
 
@@ -232,6 +238,10 @@ Các mẫu được tạo theo luật của demo nên dễ phân tách và khôn
 Các thao tác lab và dịch vụ bên ngoài chưa được thực thi trên máy phát triển. Hash lookup dùng endpoint file report của VirusTotal; tài liệu API cảnh báo chỉ báo cáo hash công khai và không truy vấn indicator nhạy cảm. ProcMon capture cần quyền/driver hoạt động trên Windows và phải được chạy trong VM. CSV/JSON/PML lab và thư mục quarantine được gitignore mặc định vì có thể chứa telemetry hoặc file nhạy cảm; khi nộp bài, chọn lọc và làm sạch bản minh chứng cần thiết.
 
 ## Các bước còn lại để hoàn thiện đồ án
+
+Các công cụ bổ sung cho phần PID: `scripts/analyze_pid_data.py` tạo EDA; `scripts/train_pid_models.py` huấn luyện và xuất biểu đồ; `scripts/evaluate_pid_sessions.py` so sánh rule/ML/kết hợp trên phiên mới. Notebook tương ứng: `notebooks/pid_lab_eda_training.ipynb`. Chạy `python scripts/verify_project.py` để lưu kết quả kiểm thử phần mềm, sau đó `python scripts/build_project_report.py` để cập nhật [báo cáo tổng hợp](docs/BAO_CAO_TONG_HOP.md) từ artifact có thật. Xem [quy trình lab](docs/LAB_WORKFLOW.md) cho lệnh và giới hạn đánh giá.
+
+Quy trình thao tác đầy đủ ở [docs/LAB_WORKFLOW.md](docs/LAB_WORKFLOW.md). Kiểm tra các thay đổi mới bằng `python -m unittest discover -s tests -v`; xem [biên bản kiểm tra](docs/VALIDATION.md) để biết phạm vi đã xác minh.
 
 1. Chạy `python scripts/safe_behavior_lab.py` trong VM; JSON log tự lưu vào `artifacts/reports/lab_runs/`. Chạy thêm kịch bản Atomic Red Team hoặc kịch bản khác đã được duyệt và lưu log/ảnh màn hình thủ công cùng hồ sơ VM. Safe script chỉ tạo CPU/I/O giới hạn và loopback, không thay thế Atomic Red Team.
 2. Thu thập PID benign/simulated trong VM với nguồn nhãn và nhiều executable path riêng cho từng lớp; chạy `python scripts/train_pid_models.py`; đính kèm metric, confusion matrix, `label_source_audit.csv` và phân tích false positive.

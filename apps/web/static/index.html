@@ -3,24 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101b31">
+  <meta name="theme-color" content="#0c182b">
   <title>ProcessGuard — Security Monitor</title>
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body data-default-mode="live">
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M2 12h5l3-8 4 16 3-8h5"/></symbol>
+    <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a1.3 1.3 0 0 0 1 2h14a1.3 1.3 0 0 0 1-2L14 9V3M7 15h10"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 8a8 8 0 0 0-14-3L3 8m0-5v5h5M4 16a8 8 0 0 0 14 3l3-3m0 5v-5h-5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 13.5A9 9 0 0 1 10.5 3 9 9 0 1 0 20.5 13.5Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></symbol>
+    <symbol id="i-memory" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10v4m4-4v4m4-4v4M8 3v3m8-3v3M8 18v3m8-3v3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2zM12 9v5m0 3v.1"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </defs></svg>
+    <a class="skip-link" href="#main-content">Đến nội dung chính</a>
   <div class="app-shell">
     <aside class="sidebar">
       <a class="brand" href="#monitor" aria-label="ProcessGuard home">
-        <span class="brand-mark"><span></span><span></span><span></span><span></span></span>
-        <span><strong>process<span>guard</span></strong><small>ENDPOINT INTELLIGENCE</small></span>
+        <span class="brand-mark"><svg class="ui-icon"><use href="#i-shield"/></svg></span>
+        <span><strong>Process<span>Guard</span></strong><small>ENDPOINT INTELLIGENCE</small></span>
       </a>
 
       <div class="side-label">WORKSPACE</div>
       <nav class="side-nav" aria-label="Điều hướng chính">
-        <button class="nav-item active" data-view="monitor"><span class="nav-icon">◫</span><span>Giám sát</span><span class="nav-count" id="nav-alert-count">0</span></button>
-        <button class="nav-item" data-view="research"><span class="nav-icon">⌁</span><span>Nghiên cứu ML</span></button>
-        <button class="nav-item" data-view="events"><span class="nav-icon">◷</span><span>Nhật ký cảnh báo</span></button>
+        <button class="nav-item active" data-view="monitor" title="Giám sát" aria-current="page"><span class="nav-icon"><svg class="ui-icon"><use href="#i-grid"/></svg></span><span>Giám sát</span><span class="nav-count" id="nav-alert-count">0</span></button>
+        <button class="nav-item" data-view="research" title="Nghiên cứu ML"><span class="nav-icon"><svg class="ui-icon"><use href="#i-flask"/></svg></span><span>Nghiên cứu ML</span></button>
+        <button class="nav-item" data-view="events" title="Nhật ký cảnh báo"><span class="nav-icon"><svg class="ui-icon"><use href="#i-history"/></svg></span><span>Nhật ký cảnh báo</span></button>
       </nav>
 
       <div class="side-label side-label-spaced">DATA SOURCE</div>
@@ -31,42 +51,58 @@
       </div>
 
       <div class="sidebar-bottom">
-        <div class="safe-note"><span class="safe-shield">✓</span><div><strong>Local telemetry</strong><small>Web không điều khiển process</small></div></div>
+        <div class="safe-note"><span class="safe-shield"><svg class="ui-icon"><use href="#i-shield"/></svg></span><div><strong>Giám sát cục bộ</strong><small>Dashboard chỉ đọc dữ liệu</small></div></div>
         <div class="sidebar-footer"><span class="footer-avatar">PG</span><span><strong>ProcessGuard</strong><small>Research workspace</small></span><span class="version">v1.0</span></div>
       </div>
     </aside>
 
-    <main class="main-area">
+    <main class="main-area" id="main-content" tabindex="-1">
       <header class="topbar">
         <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="breadcrumb-current">Giám sát</strong></div>
         <div class="topbar-actions">
-          <label class="search-box"><span>⌕</span><input id="global-search" type="search" placeholder="Tìm tiến trình, PID, đường dẫn…" autocomplete="off"><kbd>⌘ K</kbd></label>
+          <label class="search-box"><svg class="ui-icon"><use href="#i-search"/></svg><input id="global-search" aria-label="Tìm tiến trình" type="search" placeholder="Tìm tên, PID, đường dẫn…" autocomplete="off"><kbd>Ctrl K</kbd></label>
           <span class="top-divider"></span>
           <div class="mode-switch" role="group" aria-label="Chế độ dữ liệu">
             <button class="mode-button active" data-mode="live"><span class="mode-dot"></span>Live</button>
             <button class="mode-button" data-mode="demo">Demo an toàn</button>
           </div>
-          <button class="icon-button" id="refresh-button" aria-label="Làm mới" title="Làm mới snapshot">↻</button>
+          <button class="icon-button" id="theme-toggle" aria-label="Bật giao diện tối" title="Bật giao diện tối"><svg class="ui-icon"><use href="#i-moon"/></svg></button>
+          <button class="icon-button" id="refresh-button" aria-label="Làm mới" title="Làm mới snapshot"><svg class="ui-icon"><use href="#i-refresh"/></svg></button>
         </div>
       </header>
 
       <div class="content-wrap">
-        <section class="view active" id="monitor-view">
+        <section class="view active" id="monitor-view" tabindex="-1">
           <div class="page-heading">
-            <div><div class="eyebrow"><span class="eyebrow-line"></span> ENDPOINT OVERVIEW</div><h1>Giám sát tiến trình</h1>
-              <p>Theo dõi hành vi runtime và phát hiện tín hiệu bất thường trên endpoint.</p></div>
-            <div class="heading-meta"><span class="live-pulse"></span><span id="updated-label">Đang khởi tạo snapshot…</span><button class="button-secondary" id="pause-button">Ⅱ Tạm dừng</button></div>
+            <div><div class="eyebrow"><span class="eyebrow-line"></span> ENDPOINT OVERVIEW <span class="workspace-tag">LOCAL WORKSPACE</span></div><h1>Giám sát tiến trình<span class="title-dot">.</span></h1>
+              <p>Quan sát hoạt động. Nhận diện bất thường. Điều tra có căn cứ.</p></div>
+            <div class="heading-meta"><div class="update-status"><span class="live-pulse"></span><span id="updated-label">Đang khởi tạo…</span></div><button class="button-secondary" id="pause-button" aria-pressed="false"><svg class="ui-icon"><use href="#i-pause"/></svg>Tạm dừng</button></div>
           </div>
 
           <div class="notice-banner" id="mode-notice"><span class="notice-icon">i</span><span>Điểm cảnh báo là tín hiệu cần kiểm tra, không phải kết luận malware.</span><button aria-label="Đóng thông báo" id="dismiss-notice">×</button></div>
 
           <div class="stat-grid">
-            <article class="stat-card"><div class="stat-top"><span>Tổng tiến trình</span><span class="stat-icon icon-blue">▤</span></div><div class="stat-value" id="stat-processes">—</div><div class="stat-foot"><span class="stat-indicator blue-indicator"></span><span>Đang hoạt động trên host</span></div></article>
-            <article class="stat-card"><div class="stat-top"><span>Cần xem xét</span><span class="stat-icon icon-amber">⚑</span></div><div class="stat-value" id="stat-alerts">—</div><div class="stat-foot"><span class="stat-indicator amber-indicator"></span><span>Điểm tổng hợp từ rule / ML</span></div></article>
-            <article class="stat-card"><div class="stat-top"><span>CPU hệ thống</span><span class="stat-icon icon-violet">⌁</span></div><div class="stat-value"><span id="stat-cpu">—</span><small>%</small></div><div class="mini-meter"><span id="cpu-meter"></span></div></article>
-            <article class="stat-card"><div class="stat-top"><span>Bộ nhớ hệ thống</span><span class="stat-icon icon-teal">▥</span></div><div class="stat-value"><span id="stat-memory">—</span><small>%</small></div><div class="mini-meter teal-meter"><span id="memory-meter"></span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Tổng tiến trình</span><span class="stat-icon icon-blue"><svg class="ui-icon"><use href="#i-layers"/></svg></span></div><div class="stat-value" id="stat-processes">—</div><div class="stat-foot"><span class="stat-indicator blue-indicator"></span><span id="stat-process-note">Đang hoạt động trên host</span></div></article>
+            <article class="stat-card attention-card"><div class="stat-top"><span>Cần xem xét</span><span class="stat-icon icon-amber"><svg class="ui-icon"><use href="#i-alert"/></svg></span></div><div class="stat-value" id="stat-alerts">—</div><div class="stat-foot"><span class="stat-indicator amber-indicator"></span><span>Điểm tín hiệu từ 65% trở lên</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>CPU hệ thống</span><span class="stat-icon icon-violet"><svg class="ui-icon"><use href="#i-activity"/></svg></span></div><div class="stat-value"><span id="stat-cpu">—</span><small>%</small></div><div class="mini-meter"><span id="cpu-meter"></span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Bộ nhớ hệ thống</span><span class="stat-icon icon-teal"><svg class="ui-icon"><use href="#i-memory"/></svg></span></div><div class="stat-value"><span id="stat-memory">—</span><small>%</small></div><div class="mini-meter teal-meter"><span id="memory-meter"></span></div></article>
           </div>
 
+          <div class="lower-grid">
+            <section class="panel process-panel">
+              <div class="panel-heading process-heading"><div><div class="section-kicker">PROCESS EXPLORER</div><h2>Tiến trình đang theo dõi <span class="heading-count" id="table-count">0</span></h2><p>Chọn một tiến trình để mở bảng điều tra chi tiết.</p></div><button class="button-secondary" id="export-processes"><svg class="ui-icon"><use href="#i-download"/></svg>Xuất CSV</button></div>
+              <div class="table-tools"><div class="filter-pills" role="group" aria-label="Lọc tiến trình"><button class="filter-pill active" data-filter="all" aria-pressed="true">Tất cả</button><button class="filter-pill" data-filter="alerts" aria-pressed="false">Cần xem xét <span id="filter-alert-count">0</span></button><button class="filter-pill" data-filter="cpu" aria-pressed="false">CPU cao</button><button class="filter-pill" data-filter="network" aria-pressed="false">Có kết nối</button></div><button class="text-button" id="clear-search">Đặt lại</button></div>
+              <div class="table-options"><span id="visible-count" role="status">Đang lấy dữ liệu…</span><label class="sort-control">Sắp xếp <select id="process-sort" aria-label="Sắp xếp tiến trình"><option value="tree">Cây tiến trình</option><option value="risk">Điểm tín hiệu ↓</option><option value="cpu">CPU ↓</option><option value="memory">RAM ↓</option><option value="name">Tên A–Z</option></select></label></div>
+              <div class="table-scroll"><table><thead><tr><th class="process-col">TIẾN TRÌNH</th><th>PID / PPID</th><th>CPU</th><th>RAM</th><th>NET</th><th>RISK SCORE</th></tr></thead><tbody id="process-table"><tr><td colspan="6" class="loading-cell"><span class="spinner"></span>Đang tải danh sách tiến trình…</td></tr></tbody></table></div>
+              <div class="table-footer"><span id="table-footer-label">Đang chờ dữ liệu</span><span id="table-updated">—</span></div>
+            </section>
+
+            <aside class="panel alerts-panel">
+              <div class="panel-heading"><div><h2>Phát hiện gần đây</h2><p>Cảnh báo mới nhất từ ProcessGuard</p></div><button class="more-button" data-view-link="events" aria-label="Xem nhật ký">···</button></div>
+              <div class="alert-list" id="recent-alerts"><div class="empty-state"><span>✓</span><strong>Chưa có cảnh báo</strong><small>Tiến trình đáng chú ý sẽ xuất hiện tại đây.</small></div></div>
+              <button class="all-events-button" data-view-link="events">Xem toàn bộ nhật ký <span>→</span></button>
+            </aside>
+          </div>
           <div class="overview-grid">
             <section class="panel resource-panel">
               <div class="panel-heading"><div><h2>Tài nguyên endpoint</h2><p>CPU và RAM hệ thống trong phiên giám sát</p></div><span class="panel-period"><span class="live-pulse small-pulse"></span> REALTIME</span></div>
@@ -85,28 +121,14 @@
             </section>
           </div>
 
-          <div class="lower-grid">
-            <section class="panel process-panel">
-              <div class="panel-heading process-heading"><div><h2>Process tree <span class="heading-count" id="table-count">0</span></h2><p>Quan hệ cha-con và tín hiệu rủi ro theo từng tiến trình</p></div><button class="text-button" id="clear-search">Xóa bộ lọc <span>↗</span></button></div>
-              <div class="table-tools"><div class="filter-pills" role="group" aria-label="Lọc tiến trình"><button class="filter-pill active" data-filter="all">Tất cả</button><button class="filter-pill" data-filter="alerts">Cần xem xét <span id="filter-alert-count">0</span></button><button class="filter-pill" data-filter="cpu">CPU cao</button><button class="filter-pill" data-filter="network">Có kết nối</button></div><span class="table-updated" id="table-updated">—</span></div>
-              <div class="table-scroll"><table><thead><tr><th class="process-col">TIẾN TRÌNH</th><th>PID / PPID</th><th>CPU</th><th>RAM</th><th>NET</th><th>RISK SCORE</th></tr></thead><tbody id="process-table"><tr><td colspan="6" class="loading-cell"><span class="spinner"></span>Đang tải danh sách tiến trình…</td></tr></tbody></table></div>
-              <div class="table-footer"><span id="table-footer-label">Đang chờ dữ liệu</span><span><i class="legend-dot risk-dot"></i> ≥ 65% cần xem xét</span></div>
-            </section>
-
-            <aside class="panel alerts-panel">
-              <div class="panel-heading"><div><h2>Phát hiện gần đây</h2><p>Cảnh báo mới nhất từ ProcessGuard</p></div><button class="more-button" data-view-link="events" aria-label="Xem nhật ký">···</button></div>
-              <div class="alert-list" id="recent-alerts"><div class="empty-state"><span>✓</span><strong>Chưa có cảnh báo</strong><small>Tiến trình đáng chú ý sẽ xuất hiện tại đây.</small></div></div>
-              <button class="all-events-button" data-view-link="events">Xem toàn bộ nhật ký <span>→</span></button>
-            </aside>
-          </div>
           <footer class="page-footer"><span>PROCESSGUARD <b>•</b> Local security research</span><span id="footer-resource">Monitor resource usage —</span></footer>
         </section>
 
         <section class="view" id="research-view">
           <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> MODEL LAB</div><h1>Nghiên cứu học máy</h1><p>Kết quả đánh giá từ Cardiff Dataset 2 và paper dự đoán malware sớm.</p></div><a class="button-secondary link-button" href="https://doi.org/10.1016/j.cose.2018.05.010" target="_blank" rel="noreferrer">Đọc paper ↗</a></div>
-          <div class="research-callout"><span class="research-icon">⌁</span><div><strong>Đúng granularity của dataset</strong><p>Cardiff lưu telemetry toàn máy khi chạy một executable trong sandbox. Các chỉ số dưới đây đánh giá ở cấp mẫu executable; web monitor không gán model Cardiff cho PID live.</p></div><a href="https://doi.org/10.17035/d.2018.0050524986" target="_blank" rel="noreferrer">Dataset ↗</a></div>
+          <div class="research-callout"><span class="research-icon"><svg class="ui-icon"><use href="#i-flask"/></svg></span><div><strong>Kết quả nghiên cứu offline</strong><p>Cardiff ghi hoạt động toàn máy trong sandbox theo từng executable. Các chỉ số này phục vụ đánh giá dataset; khả năng phát hiện PID live cần được kiểm thử riêng trong lab.</p></div><a href="https://doi.org/10.17035/d.2018.0050524986" target="_blank" rel="noreferrer">Dataset ↗</a></div>
           <div class="research-stats" id="research-stats"></div>
-          <section class="panel research-panel"><div class="panel-heading"><div><h2>So sánh mô hình</h2><p>Published test split · cửa sổ quan sát 5 giây</p></div><span class="dataset-badge">CARDIFF DATASET 2</span></div><div class="table-scroll"><table class="research-table"><thead><tr><th>MÔ HÌNH</th><th>ACCURACY</th><th>PRECISION</th><th>RECALL</th><th>F1 SCORE</th><th>FALSE POSITIVE</th><th>INFERENCE / PROCESS (MS)</th></tr></thead><tbody id="research-table"><tr><td colspan="7" class="loading-cell">Đang đọc báo cáo local…</td></tr></tbody></table></div><div class="research-footnote" id="research-footnote">Báo cáo được đọc từ artifacts/reports/cardiff/cardiff_model_comparison.csv.</div></section>
+          <section class="panel research-panel"><div class="panel-heading"><div><h2>So sánh mô hình</h2><p>Published test split · cửa sổ quan sát 5 giây</p></div><span class="dataset-badge">CARDIFF DATASET 2</span></div><div class="table-scroll"><table class="research-table"><thead><tr><th>MÔ HÌNH</th><th>ACCURACY</th><th>PRECISION</th><th>RECALL</th><th>F1 SCORE</th><th>FALSE POSITIVE</th><th>INFERENCE / MẪU (MS)</th></tr></thead><tbody id="research-table"><tr><td colspan="7" class="loading-cell">Đang đọc báo cáo local…</td></tr></tbody></table></div><div class="research-footnote" id="research-footnote">Báo cáo được đọc từ artifacts/reports/cardiff/cardiff_model_comparison.csv.</div></section>
           <div class="research-bottom-grid"><section class="panel paper-panel"><div class="eyebrow">REFERENCE PAPER</div><h2>Early-stage malware prediction using recurrent neural networks</h2><p>Rhode, Burnap &amp; Jones · Computers &amp; Security, 77 (2018), 578–594.</p><a href="https://orca.cardiff.ac.uk/id/eprint/111627/8/1-s2.0-S0167404818305546-main.pdf" target="_blank" rel="noreferrer">Mở bản PDF <span>↗</span></a></section><section class="panel paper-panel"><div class="eyebrow">REPRODUCIBILITY</div><h2>Notebook và pipeline</h2><p>EDA, tiền xử lý chuỗi 1–5 giây, đánh giá bốn model và feature importance.</p><code>python scripts/eda.py<br>python scripts/train_models.py --seconds 5</code></section></div>
         </section>
 
@@ -117,11 +139,12 @@
       </div>
     </main>
 
-    <aside class="detail-drawer" id="detail-drawer" aria-label="Chi tiết tiến trình" aria-hidden="true">
+    <aside class="detail-drawer" id="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-name" aria-hidden="true" inert>
       <div class="drawer-header"><div><span class="eyebrow">PROCESS INSPECTOR</span><button class="drawer-close" id="close-drawer" aria-label="Đóng">×</button></div><div class="drawer-process-icon" id="drawer-icon">PR</div><h2 id="drawer-name">Chọn tiến trình</h2><p id="drawer-path">Chọn một dòng trong process tree để xem chi tiết.</p></div>
       <div class="drawer-content" id="drawer-content"><div class="empty-state"><span>⌕</span><strong>Chưa chọn tiến trình</strong><small>Thông tin runtime và các tín hiệu phát hiện sẽ hiển thị tại đây.</small></div></div>
     </aside>
     <div class="drawer-scrim" id="drawer-scrim"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 </body>
 </html>

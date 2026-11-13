@@ -3,6 +3,8 @@
     mode: document.body.dataset.defaultMode === "demo" ? "demo" : "live",
     view: "monitor",
     filter: "all",
+    sort: "tree",
+    visibleRows: [],
     paused: false,
     snapshot: null,
     rows: [],
@@ -10,10 +12,41 @@
     history: [],
     selectedPid: null,
     noticeDismissed: false,
+    requestId: 0,
+    drawerReturnFocus: null,
   };
 
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
+  const icon = (name) => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "ui-icon");
+    svg.setAttribute("aria-hidden", "true");
+    const use = document.createElementNS(svg.namespaceURI, "use");
+    use.setAttribute("href", `#i-${name}`);
+    svg.append(use);
+    return svg;
+  };
+  let toastTimer;
+  function toast(message) {
+    const element = $("#toast");
+    element.textContent = message;
+    element.classList.add("visible");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => element.classList.remove("visible"), 3500);
+  }
+  function setTheme(theme, persist = true) {
+    const dark = theme === "dark";
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    const button = $("#theme-toggle");
+    button.replaceChildren(icon(dark ? "sun" : "moon"));
+    button.setAttribute("aria-label", dark ? "Bật giao diện sáng" : "Bật giao diện tối");
+    button.title = button.getAttribute("aria-label");
+    if (persist) {
+      try { localStorage.setItem("processguard-theme", dark ? "dark" : "light"); } catch (_) { /* Private browser storage may be disabled. */ }
+    }
+    renderChart();
+  }
   const make = (tag, className, text) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -38,23 +71,39 @@
   };
   const initials = (name) => (String(name || "PR").replace(/\.exe$/i, "").match(/[a-z0-9]+/gi) || ["PR"])
     .slice(0, 2).map((piece) => piece[0]).join("").toUpperCase();
-  const riskLevel = (score) => score >= .75 ? "high" : score >= .45 ? "medium" : "low";
+  const riskLevel = (score) => score >= .65 ? "high" : score >= .4 ? "medium" : "low";
   const riskLabel = (score) => score >= .65 ? "Xem xét" : score >= .4 ? "Theo dõi" : "Bình thường";
 
   function setView(view) {
     state.view = view;
     $$(".view").forEach((element) => element.classList.toggle("active", element.id === `${view}-view`));
-    $$(".nav-item").forEach((element) => element.classList.toggle("active", element.dataset.view === view));
+    $$(".nav-item").forEach((element) => {
+      const active = element.dataset.view === view;
+      element.classList.toggle("active", active);
+      if (active) element.setAttribute("aria-current", "page");
+      else element.removeAttribute("aria-current");
+    });
     const labels = { monitor: "Giám sát", research: "Nghiên cứu ML", events: "Nhật ký cảnh báo" };
     $("#breadcrumb-current").textContent = labels[view] || "Giám sát";
     if (view === "events") loadEvents(true);
     if (view === "research") loadResearch();
+    if (view === "monitor") window.requestAnimationFrame(renderChart);
+    $("#global-search").disabled = view !== "monitor";
+    $("#global-search").placeholder = view === "monitor" ? "Tìm tên, PID, đường dẫn…" : "Tìm kiếm trong trang Giám sát";
   }
 
   function setMode(mode) {
     if (!new Set(["live", "demo"]).has(mode)) return;
     state.mode = mode;
-    $$(".mode-button").forEach((element) => element.classList.toggle("active", element.dataset.mode === mode));
+    state.history = [];
+    state.rows = [];
+    state.snapshot = null;
+    state.noticeDismissed = false;
+    $$(".mode-button").forEach((element) => {
+      const active = element.dataset.mode === mode;
+      element.classList.toggle("active", active);
+      element.setAttribute("aria-pressed", String(active));
+    });
     $("#source-mode-label").textContent = mode === "demo" ? "Safe demo fixtures" : "Live host";
     $("#source-model-label").textContent = mode === "demo" ? "Synthetic PID model · demo only" : "Local process telemetry";
     const notice = $("#mode-notice");
@@ -65,19 +114,23 @@
     if (!state.noticeDismissed) notice.classList.remove("hidden");
     state.selectedPid = null;
     closeDrawer();
+    renderRows();
+    renderChart();
     refreshSnapshot(true);
   }
 
   async function refreshSnapshot(force = false) {
     if (state.paused && !force) return;
+    const requestId = ++state.requestId;
     try {
       const response = await fetch(`/api/processes?mode=${state.mode}`, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
-      if (state.mode !== payload.mode) return;
+      if (requestId !== state.requestId || state.mode !== payload.mode) return;
+      const newSnapshot = payload.updated_at !== state.snapshot?.updated_at;
       state.snapshot = payload;
       state.rows = payload.processes || [];
-      state.history.push({ cpu: safeNumber(payload.summary?.host_cpu), memory: safeNumber(payload.summary?.host_memory) });
+      if (newSnapshot) state.history.push({ cpu: safeNumber(payload.summary?.host_cpu), memory: safeNumber(payload.summary?.host_memory) });
       state.history = state.history.slice(-30);
       updateDashboard(payload);
       renderRows();
@@ -89,21 +142,27 @@
         else closeDrawer();
       }
     } catch (error) {
+      if (requestId !== state.requestId) return;
       $("#updated-label").textContent = `Mất kết nối API · ${error.message}`;
       $("#collector-status").textContent = "Không kết nối";
-      $("#collector-status").style.color = "#c45c62";
+      $("#collector-status").style.color = "var(--red)";
+      $("#health-score").textContent = "!";
+      $("#health-title").textContent = "Chưa kết nối được collector";
+      $("#health-description").textContent = "Kiểm tra server local và thử làm mới dữ liệu.";
+      $(".health-ring").style.background = "var(--red)";
     }
   }
 
   function updateDashboard(payload) {
     const summary = payload.summary || {};
     $("#stat-processes").textContent = safeNumber(summary.process_count).toLocaleString("vi-VN");
+    $("#stat-process-note").textContent = payload.mode === "demo" ? "Bản ghi tổng hợp trong demo" : "Đang hoạt động trên host";
     $("#stat-alerts").textContent = safeNumber(summary.alert_count).toLocaleString("vi-VN");
     $("#stat-cpu").textContent = safeNumber(summary.host_cpu).toFixed(1);
     $("#stat-memory").textContent = safeNumber(summary.host_memory).toFixed(1);
     $("#cpu-meter").style.width = `${Math.min(100, safeNumber(summary.host_cpu))}%`;
     $("#memory-meter").style.width = `${Math.min(100, safeNumber(summary.host_memory))}%`;
-    $("#updated-label").textContent = `Cập nhật ${prettyTime(payload.updated_at)}`;
+    $("#updated-label").textContent = `${state.paused ? "Đang tạm dừng" : "Cập nhật"} ${prettyTime(payload.updated_at)}`;
     $("#table-updated").textContent = `Snapshot ${prettyTime(payload.updated_at)}`;
     $("#table-count").textContent = String(state.rows.length);
     $("#filter-alert-count").textContent = String(summary.alert_count || 0);
@@ -122,9 +181,9 @@
       ? "Fixture process và model synthetic được bật cho minh họa."
       : payload.model || "Đang thu thập telemetry bằng psutil.";
     $("#collector-status").textContent = "Đang hoạt động";
-    $("#collector-status").style.color = "#2b9d80";
+    $("#collector-status").style.color = "var(--teal)";
     $("#health-score").textContent = "OK";
-    $(".health-ring").style.background = "conic-gradient(#25b995 0deg, #25b995 360deg)";
+    $(".health-ring").style.background = "var(--teal)";
     $("#chart-current").textContent = `CPU ${percent(summary.host_cpu)} · RAM ${percent(summary.host_memory)}`;
     const notice = $("#mode-notice");
     if (payload.mode === "demo") {
@@ -138,6 +197,7 @@
 
   function renderRows() {
     const body = $("#process-table");
+    const focusedPid = body.contains(document.activeElement) ? document.activeElement.dataset.pid : null;
     body.replaceChildren();
     const query = $("#global-search").value.trim().toLocaleLowerCase("vi");
     const visible = state.rows.filter((row) => {
@@ -151,6 +211,12 @@
       }
       return true;
     });
+    const sortKeys = { risk: "score", cpu: "cpu_percent", memory: "memory_percent" };
+    if (sortKeys[state.sort]) visible.sort((a, b) => safeNumber(b[sortKeys[state.sort]]) - safeNumber(a[sortKeys[state.sort]]) || safeNumber(a.pid) - safeNumber(b.pid));
+    if (state.sort === "name") visible.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "vi"));
+    state.visibleRows = visible;
+    $("#visible-count").textContent = `Hiển thị ${visible.length} / ${state.rows.length} tiến trình`;
+    $("#export-processes").disabled = visible.length === 0;
     if (!visible.length) {
       const row = make("tr");
       const cell = make("td", "loading-cell", state.rows.length ? "Không có tiến trình khớp bộ lọc." : "Đang chờ snapshot tiến trình…");
@@ -163,15 +229,19 @@
     visible.forEach((process) => {
       const row = make("tr");
       row.dataset.pid = String(process.pid);
-      if (Number(process.pid) === Number(state.selectedPid)) row.classList.add("selected");
+      row.tabIndex = 0;
+      row.setAttribute("aria-label", `${process.name}, PID ${process.pid}, ${riskLabel(safeNumber(process.score))}`);
+      row.classList.toggle("alert-row", safeNumber(process.score) >= .65);
+      if (state.selectedPid !== null && Number(process.pid) === Number(state.selectedPid)) row.classList.add("selected");
       const score = safeNumber(process.score);
       const level = riskLevel(score);
       const processCell = make("td");
       const wrap = make("div", "process-cell");
       const indent = make("span", "tree-indent");
-      indent.style.width = `${Math.min(12, safeNumber(process.depth)) * 13}px`;
+      const depth = state.sort === "tree" && !query && state.filter === "all" ? Math.min(12, safeNumber(process.depth)) : 0;
+      indent.style.width = `${depth * 13}px`;
       wrap.append(indent);
-      if (safeNumber(process.depth) > 0) wrap.append(make("span", "tree-branch", "↳"));
+      if (depth > 0) wrap.append(make("span", "tree-branch", "↳"));
       const icon = make("span", `process-app-icon${score >= .65 ? " suspicious" : ""}`, initials(process.name));
       wrap.append(icon);
       const nameWrap = make("span", "process-name-wrap");
@@ -196,9 +266,17 @@
       riskCell.append(pill);
       row.append(processCell, pidCell, cpuCell, memoryCell, networkCell, riskCell);
       row.addEventListener("click", () => selectProcess(process));
+      row.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault(); selectProcess(process);
+        }
+      });
       fragment.append(row);
     });
     body.append(fragment);
+    if (focusedPid && !$("#detail-drawer").classList.contains("open")) {
+      [...body.rows].find((row) => row.dataset.pid === focusedPid)?.focus({ preventScroll: true });
+    }
   }
 
   function resourceCell(value, kind) {
@@ -213,12 +291,18 @@
   }
 
   function selectProcess(process) {
+    state.drawerReturnFocus = document.activeElement;
     state.selectedPid = process.pid;
     renderRows();
     renderDetails(process);
     $("#detail-drawer").classList.add("open");
     $("#detail-drawer").setAttribute("aria-hidden", "false");
+    $("#detail-drawer").inert = false;
     $("#drawer-scrim").classList.add("open");
+    document.body.classList.add("drawer-open");
+    $(".main-area").inert = true;
+    $(".sidebar").inert = true;
+    $("#close-drawer").focus();
   }
 
   function detailTile(label, value) {
@@ -293,8 +377,17 @@
   }
 
   function closeDrawer() {
+    const wasOpen = $("#detail-drawer").classList.contains("open");
+    $(".main-area").inert = false;
+    $(".sidebar").inert = false;
+    document.body.classList.remove("drawer-open");
+    if (wasOpen) {
+      const selected = [...$("#process-table").rows].find((row) => Number(row.dataset.pid) === Number(state.selectedPid));
+      (selected || state.drawerReturnFocus || $("#global-search"))?.focus({ preventScroll: true });
+    }
     $("#detail-drawer").classList.remove("open");
     $("#detail-drawer").setAttribute("aria-hidden", "true");
+    $("#detail-drawer").inert = true;
     $("#drawer-scrim").classList.remove("open");
     $$("#process-table tr.selected").forEach((row) => row.classList.remove("selected"));
     state.selectedPid = null;
@@ -311,12 +404,16 @@
     ctx.scale(dpr, dpr);
     const width = rect.width;
     const height = rect.height;
-    const left = 8, right = width - 6, top = 8, bottom = height - 11;
+    const left = 30, right = width - 7, top = 10, bottom = height - 12;
+    const colors = getComputedStyle(document.documentElement);
     ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = "#edf1f5";
+    ctx.strokeStyle = colors.getPropertyValue("--chart-line").trim();
+    ctx.fillStyle = colors.getPropertyValue("--muted").trim();
+    ctx.font = '9px "Segoe UI", sans-serif';
     ctx.lineWidth = 1;
-    for (let index = 0; index < 4; index += 1) {
-      const y = top + (bottom - top) * index / 3;
+    for (let index = 0; index < 5; index += 1) {
+      const y = top + (bottom - top) * index / 4;
+      ctx.fillText(`${100 - index * 25}`, 0, y + 3);
       ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
     }
     if (state.history.length < 2) {
@@ -325,6 +422,20 @@
     }
     $("#chart-empty").classList.add("hidden");
     const line = (key, color) => {
+      const points = state.history.map((point, index) => [
+        left + (right - left) * index / Math.max(1, state.history.length - 1),
+        bottom - Math.min(100, Math.max(0, point[key])) / 100 * (bottom - top),
+      ]);
+      const fill = ctx.createLinearGradient(0, top, 0, bottom);
+      fill.addColorStop(0, `${color}25`);
+      fill.addColorStop(1, `${color}00`);
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], bottom);
+      points.forEach(([x, y]) => ctx.lineTo(x, y));
+      ctx.lineTo(points[points.length - 1][0], bottom);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
       ctx.beginPath();
       state.history.forEach((point, index) => {
         const x = left + (right - left) * index / Math.max(1, state.history.length - 1);
@@ -336,6 +447,9 @@
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       ctx.stroke();
+      const last = points[points.length - 1];
+      ctx.beginPath(); ctx.arc(last[0], last[1], 3, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill();
     };
     line("cpu", "#5889eb");
     line("memory", "#28b995");
@@ -442,7 +556,7 @@
         row.append(make("td", "", safeNumber(metric.inference_ms_per_sample).toFixed(3)));
         body.append(row);
       });
-      $("#research-footnote").textContent = "Nguồn: artifacts/reports/cardiff/cardiff_model_comparison.csv · Published test_set. Inference đo estimator predict trên một mẫu, đã warm-up; thời gian phụ thuộc máy và không gồm collector/UI.";
+      $("#research-footnote").textContent = "Nguồn: Cardiff Dataset 2 · split test_set công bố. Inference đo estimator predict theo batch, quy đổi ms/mẫu sau warm-up; không gồm collector hoặc giao diện.";
     } catch (_error) {
       $("#research-table").replaceChildren(make("tr"));
       $("#research-footnote").textContent = "Không tải được báo cáo nghiên cứu local.";
@@ -476,27 +590,65 @@
     }
   }
 
+  function exportProcesses() {
+    if (!state.visibleRows.length) { toast("Không có tiến trình trong bộ lọc hiện tại."); return; }
+    const columns = ["mode", "snapshot_at", "name", "pid", "ppid", "exe", "cmdline", "cpu_percent",
+      "memory_percent", "connection_count", "rule_score", "ml_score", "score", "model_name"];
+    // Quoting alone does not stop spreadsheet formula evaluation in executable/command text.
+    const cell = (value) => {
+      let text = String(value ?? "");
+      if (/^[\s]*[=+\-@]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+    const rows = state.visibleRows.map((row) => ({ ...row, mode: state.mode, snapshot_at: state.snapshot?.updated_at || "" }));
+    const csv = [columns.map(cell).join(","), ...rows.map((row) => columns.map((column) => cell(row[column])).join(","))].join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `processguard-${state.mode}-processes.csv`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(`Đã xuất ${rows.length} tiến trình ${state.mode === "demo" ? "demo" : "live"} theo bộ lọc hiện tại.`);
+  }
+
   $$(".nav-item").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+  $(".brand").addEventListener("click", () => setView("monitor"));
   $$("[data-view-link]").forEach((button) => button.addEventListener("click", () => setView(button.dataset.viewLink)));
   $$(".mode-button").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
   $$(".filter-pill").forEach((button) => button.addEventListener("click", () => {
     state.filter = button.dataset.filter;
-    $$(".filter-pill").forEach((pill) => pill.classList.toggle("active", pill === button));
+    $$(".filter-pill").forEach((pill) => {
+      pill.classList.toggle("active", pill === button);
+      pill.setAttribute("aria-pressed", String(pill === button));
+    });
     renderRows();
   }));
   $("#global-search").addEventListener("input", renderRows);
   $("#clear-search").addEventListener("click", () => {
     $("#global-search").value = "";
     state.filter = "all";
-    $$(".filter-pill").forEach((pill) => pill.classList.toggle("active", pill.dataset.filter === "all"));
+    state.sort = "tree";
+    $("#process-sort").value = "tree";
+    $$(".filter-pill").forEach((pill) => {
+      pill.classList.toggle("active", pill.dataset.filter === "all");
+      pill.setAttribute("aria-pressed", String(pill.dataset.filter === "all"));
+    });
     renderRows();
   });
   $("#refresh-button").addEventListener("click", () => refreshSnapshot(true));
   $("#export-performance").addEventListener("click", exportPerformance);
+  $("#export-processes").addEventListener("click", exportProcesses);
+  $("#process-sort").addEventListener("change", (event) => { state.sort = event.target.value; renderRows(); });
+  $("#theme-toggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
   $("#events-refresh").addEventListener("click", () => loadEvents(true));
   $("#pause-button").addEventListener("click", () => {
     state.paused = !state.paused;
-    $("#pause-button").textContent = state.paused ? "▶ Tiếp tục" : "Ⅱ Tạm dừng";
+    $("#pause-button").replaceChildren(icon(state.paused ? "play" : "pause"), document.createTextNode(state.paused ? "Tiếp tục" : "Tạm dừng"));
+    $("#pause-button").setAttribute("aria-pressed", String(state.paused));
+    if (state.paused) {
+      state.requestId += 1;
+      $("#updated-label").textContent = "Đã tạm dừng cập nhật";
+    }
     if (!state.paused) refreshSnapshot();
   });
   $("#dismiss-notice").addEventListener("click", () => {
@@ -506,12 +658,22 @@
   $("#close-drawer").addEventListener("click", closeDrawer);
   $("#drawer-scrim").addEventListener("click", closeDrawer);
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Tab" && $("#detail-drawer").classList.contains("open")) {
+      const focusable = [...$("#detail-drawer").querySelectorAll('button, a[href], input, select, [tabindex="0"]')];
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault(); $("#global-search").focus();
+      event.preventDefault();
+      if (!$("#detail-drawer").classList.contains("open")) { setView("monitor"); $("#global-search").focus(); }
     }
     if (event.key === "Escape") closeDrawer();
   });
   window.addEventListener("resize", renderChart);
+  let savedTheme = "light";
+  try { savedTheme = localStorage.getItem("processguard-theme") || "light"; } catch (_) { /* Keep local default. */ }
+  setTheme(savedTheme, false);
   setMode(state.mode);
   window.setInterval(() => { if (!state.paused) refreshSnapshot(); }, 3000);
 })();

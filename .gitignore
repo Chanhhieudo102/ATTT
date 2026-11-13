@@ -11,4 +11,6 @@ artifacts/reports/**/*.pml
 artifacts/logs/*.jsonl
 artifacts/quarantine/
 data/observations/*.csv
+data/observations/*.json
+data/observations/*.tmp
 data/fixtures/synthetic_demo/*.csv

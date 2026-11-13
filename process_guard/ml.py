@@ -20,6 +20,17 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = ROOT / "artifacts/models/synthetic_demo"
 REPORT_DIR = ROOT / "artifacts/reports/synthetic_demo"
 
+ALERT_THRESHOLD = 0.65
+
+
+def model_scores(model, samples, unsupervised: bool = False):
+    """Shared score calculation for offline PID evaluation and live inference."""
+    if unsupervised:
+        raw = np.clip(-8 * model.decision_function(samples), -700, 700)
+        return 1 / (1 + np.exp(-raw))
+    positive = list(model.classes_).index(1)
+    return model.predict_proba(samples)[:, positive]
+
 
 def train_all(dataset: str | Path = ROOT / "data/fixtures/synthetic_demo/process_samples_synthetic.csv") -> pd.DataFrame:
     data = pd.read_csv(dataset)
@@ -128,12 +139,7 @@ class ModelScorer:
         X = pd.DataFrame([[row[column] for column in self.bundle["features"]]
                           for row in feature_rows], columns=self.bundle["features"])
         model = self.bundle["model"]
-        if self.bundle.get("unsupervised"):
-            raw = -model.decision_function(X)
-            # Monotonic bounded display score; threshold is calibrated only for UI triage.
-            scores = 1 / (1 + np.exp(-8 * raw))
-        else:
-            scores = model.predict_proba(X)[:, 1]
+        scores = model_scores(model, X, bool(self.bundle.get("unsupervised")))
         name = str(self.bundle.get("name", "ML"))
         return [(float(score), name) for score in scores]
 

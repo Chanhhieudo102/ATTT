@@ -55,8 +55,10 @@ def benchmark(duration_seconds: int, interval_seconds: float, output: Path,
                               "create_time_epoch": monitor_identity},
         "csv_path": str(output.resolve()),
         "sample_count": 0,
+        "measurement_scope": "external_monitor_pid" if target_pid is not None else "collector_cli",
         "errors": [],
-        "note": "Collector-only benchmark; does not execute lab behavior or label processes.",
+        "note": ("CPU/RSS measure selected external PID; scan_ms measures this script's collector, not the external GUI."
+                 if target_pid is not None else "Collector-only benchmark; does not execute lab behavior or label processes."),
     }
     _atomic_json(metadata_path, metadata)
     monitor.cpu_percent(interval=None)

@@ -1,6 +1,6 @@
 Ứng dụng học máy trong nhận diện các tiến trình mã độc đang hoạt động trong máy  
 
-* Hiếu + Huy: Cần chọn bộ dữ liệu chuẩn dataset về malware (?); phân tích EDA; chọn mô hình ML để huấn luyện. 
+Cần chọn bộ dữ liệu chuẩn dataset về malware (?); phân tích EDA; chọn mô hình ML để huấn luyện. 
 
 1) Mục đích 
 
