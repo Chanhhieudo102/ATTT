@@ -51,7 +51,7 @@ def build_report(root: Path, output: Path) -> None:
                         if development_checks else "Chưa có JSON benchmark ngắn trong thư mục development_checks.")
     metrics = ["model", "accuracy", "precision", "recall", "f1", "false_positive_rate", "inference_ms_per_sample"]
     cardiff = csv_table(reports / "cardiff/cardiff_model_comparison.csv", metrics)
-    pid = csv_table(reports / "pid_live/model_comparison.csv", metrics + ["validation_f1"])
+    pid = csv_table(reports / "pid_live/model_comparison.csv", metrics + ["validation_f1", "cv_f1"])
     evidence = []
     for path in evaluations:
         try:

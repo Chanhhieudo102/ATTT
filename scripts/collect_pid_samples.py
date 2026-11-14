@@ -35,11 +35,19 @@ def collect(pids: list[int], label: int, label_source: str, duration: float,
     if output.suffix.lower() != ".csv" or output.exists() or metadata.exists():
         raise ValueError("Output phải là .csv mới; không ghi đè dữ liệu hoặc metadata cũ.")
     identities = {}
+    unavailable = []
     for pid in dict.fromkeys(pids):
-        proc = psutil.Process(pid)
-        identities[pid] = {"create_time": proc.create_time(), "exe": proc.exe(), "name": proc.name()}
-        if not identities[pid]["exe"]:
+        try:
+            proc = psutil.Process(pid)
+            identity = {"create_time": proc.create_time(), "exe": proc.exe(), "name": proc.name()}
+        except psutil.NoSuchProcess:
+            unavailable.append(pid)  # exited before the session started; never label a recycled PID
+            continue
+        if not identity["exe"]:
             raise ValueError(f"Không đọc được executable của PID {pid}.")
+        identities[pid] = identity
+    if not identities:
+        raise ValueError("Không còn PID nào đang chạy để thu thập.")
     collector = ProcessCollector()
     scorer = ModelScorer(ROOT / "artifacts/models/pid_live", allowed_sources={"observed-per-process"})
     fields = FEATURE_COLUMNS + ["label", "label_name", "label_source", "process_pid",
@@ -48,7 +56,7 @@ def collect(pids: list[int], label: int, label_source: str, duration: float,
     report = {"schema_version": 1, "started_at_utc": datetime.now(timezone.utc).isoformat(),
               "status": "running", "label": label, "label_source": label_source.strip(),
               "requested_duration_seconds": duration, "interval_seconds": interval,
-              "process_identities": identities, "sample_count": 0, "skipped_snapshots": 0,
+              "process_identities": identities, "unavailable_at_start": unavailable, "sample_count": 0, "skipped_snapshots": 0,
               "ml_available": bool(scorer.bundle), "alert_threshold": ALERT_THRESHOLD,
               "ml_alert_samples": 0, "combined_alert_samples": 0,
               "label_note": "Operator-provided label; script does not independently verify behavior or VM isolation.",

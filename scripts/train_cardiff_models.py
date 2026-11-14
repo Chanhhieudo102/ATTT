@@ -26,7 +26,8 @@ from sklearn.metrics import (accuracy_score, average_precision_score, balanced_a
                              roc_auc_score, roc_curve)
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC, OneClassSVM
 from sklearn.tree import DecisionTreeClassifier
 
 try:
@@ -76,8 +77,15 @@ def _model_specs():
         ("RBF SVM", "rbf_svm", make_pipeline(
             StandardScaler(), SVC(C=1.0, kernel="rbf", class_weight="balanced",
                                   random_state=42)), False),
+        ("MLP Neural Network", "mlp", make_pipeline(
+            StandardScaler(), MLPClassifier(hidden_layer_sizes=(64, 32), alpha=1e-3,
+                                            max_iter=500, early_stopping=True,
+                                            random_state=42)), False),
         ("Isolation Forest (unsupervised)", "isolation_forest", IsolationForest(
             n_estimators=250, contamination="auto", random_state=42), True),
+        # Trained on benign samples only; flags samples outside the learned benign boundary.
+        ("One-Class SVM (unsupervised)", "one_class_svm", make_pipeline(
+            StandardScaler(), OneClassSVM(kernel="rbf", gamma="scale", nu=0.1)), True),
     ])
     return specs
 FEATURE_LABELS = [
