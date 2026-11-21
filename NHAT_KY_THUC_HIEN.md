@@ -8,9 +8,11 @@ Tài liệu này ghi lại toàn bộ những gì đã làm trong phiên làm vi
 
 | File | Nội dung |
 |---|---|
-| `BaoCao_ProcessGuard_22Nh15.docx` | Báo cáo hoàn chỉnh (43 trang, 29 hình, 16 bảng), dựng trên mẫu `22Nh15-ATTT-BAOCAO-10222022-102220016.docx` |
-| `BaoCao_ProcessGuard_22Nh15.pdf` | Bản PDF của báo cáo để xem nhanh |
+| `22Nh15-ATTT-BAOCAO-10222022-102220016.docx` | Báo cáo cuối (cập nhật 21/11/2026, 52 trang, 30 hình, 25 bảng; xem mục 8) |
+| `ProcessGuard_22Nh15_Slide.pptx` | Slide trình bày |
 | `NHAT_KY_THUC_HIEN.md` | Tài liệu này |
+
+Bản 14/11 (`BaoCao_ProcessGuard_22Nh15.docx`/`.pdf`) đã được thay bằng báo cáo cuối; có thể lấy lại từ lịch sử git (commit `ed882c2`).
 
 Định dạng báo cáo:
 - Thân bài: Times New Roman 13, căn đều hai bên (justified), giãn dòng 1,3, khoảng cách trước 0 pt, sau 6 pt.
@@ -224,3 +226,30 @@ python scripts/evaluate_pid_sessions.py --source <các file *_new_instances.csv>
 python scripts/build_report_figures.py --eval-dir artifacts/reports/pid_eval_final --benchmark <CSV benchmark>
 ```
 Script dựng file .docx (`build_report.py`, `docxlib.py`) đang nằm trong thư mục tạm của phiên. Nếu cần sửa báo cáo bằng script, hãy nhắn để tôi chuyển chúng vào repo.
+
+---
+
+## 8. Cập nhật ngày 21/11/2026: tái lập bài báo, mô hình đề xuất và báo cáo cuối
+
+**Cardiff, tái lập bài báo Rhode et al. (2018)** (`scripts/cardiff_paper_benchmark.py`, `process_guard/cardiff_deep.py`):
+- Giữ tập test công bố (521 mẫu), tách 15% train làm validation (3.484 / 615). Đánh giá tại từng giây t = 0..19.
+- 9 baseline huấn luyện lại tại mỗi giây và 10-fold CV; GRU A/B/C theo Table 13 và ensemble max(A,B,C); 3 seed, early stopping.
+- Ensemble GRU: 93,3% ở giây 5, cao nhất 95,9%. Random Forest cao nhất 96,7% (bài báo 92,05%).
+- Hai mô hình nhẹ đề xuất: LiteSE-BiLSTM-Attn (Conv1D + SE → BiLSTM → multi-head attention, 35 nghìn tham số) và Hybrid CNN-SE + XGBoost. Hybrid đạt 83,2/88,6/91,2% ở giây 1/2/3, cao hơn bài báo (79,5/83,7/88,5%).
+- Tinh chỉnh (`scripts/tune_cardiff_best.py`): tốt hơn trên validation nhưng không tốt hơn trên test, nên giữ cấu hình mặc định.
+
+**PID, mô hình chuỗi** (`scripts/pid_model_benchmark.py`, `process_guard/pid_sequence.py`):
+- Dùng lại đúng phân vùng theo file thực thi; thêm XGBoost, LiteSE và Hybrid trên cửa sổ 8 snapshot; chọn và tinh chỉnh theo AP kiểm định chéo nhóm.
+- Hybrid recall 0,879 (bắt được cả expl0rer.exe) nhưng FPR ~1%; Extra Trees recall 0,637, FPR 0%. Phiên đánh giá mới: ET và Hybrid cùng 3/4, 0 báo nhầm.
+- Hệ thống live giữ Extra Trees; Hybrid đưa vào hướng phát triển làm tín hiệu thứ hai.
+
+**Báo cáo:** viết lại 3.2–3.6, thêm phần giải thích bài toán bằng lời ở 2.1, rút gọn câu chữ toàn báo cáo (giữ nguyên hình), thêm Hình 1.1–1.3 ở mục 1.3 và cập nhật mục lục, danh mục hình, danh mục bảng.
+
+```powershell
+python -m pip install -r requirements-rnn.txt   # PyTorch CPU
+python scripts/cardiff_paper_benchmark.py
+python scripts/tune_cardiff_best.py
+python scripts/plot_cardiff_paper.py
+python scripts/pid_model_benchmark.py --stage all
+python scripts/plot_pid_models.py
+```

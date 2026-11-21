@@ -1,8 +1,13 @@
 # ProcessGuard — giám sát tiến trình và nhận diện hành vi đáng ngờ
 
-Đồ án **Ứng dụng học máy trong nhận diện các tiến trình mã độc đang hoạt động trong máy**. Dự án hiện có ứng dụng desktop và dashboard web để xem tiến trình, cây cha-con, tín hiệu rule-based và cảnh báo. Phần nghiên cứu ML dùng dataset telemetry Cardiff ở cấp **lần chạy executable**; phần chấm điểm PID live là luồng riêng, chỉ dùng được sau khi nhóm thu thập và gán nhãn dữ liệu tiến trình trong lab.
+Đồ án **Ứng dụng học máy trong nhận diện các tiến trình mã độc đang hoạt động trong máy**. Dự án có ứng dụng desktop và dashboard web để xem tiến trình, cây cha-con, tín hiệu rule-based và cảnh báo. Phần ML gồm hai luồng:
 
-> **Phạm vi kết quả:** số liệu Cardiff bên dưới là đánh giá offline trên split test của dataset. Số liệu synthetic chỉ dùng kiểm tra demo. Chưa có bộ dữ liệu PID malware/simulation được nhóm thu thập và xác minh để kết luận hiệu năng phát hiện trên máy thật.
+- **Cardiff Dataset 2** (telemetry toàn máy khi chạy executable trong sandbox): tái lập thí nghiệm của bài báo Rhode et al. (2018) và đề xuất hai mô hình nhẹ.
+- **Dữ liệu PID tự thu thập** (30.202 snapshot, 141 file thực thi, 5 chương trình mô phỏng vô hại): huấn luyện mô hình chấm điểm từng tiến trình, tích hợp vào chương trình giám sát live.
+
+> **Tài liệu nộp:** báo cáo [22Nh15-ATTT-BAOCAO-10222022-102220016.docx](22Nh15-ATTT-BAOCAO-10222022-102220016.docx) và slide [ProcessGuard_22Nh15_Slide.pptx](ProcessGuard_22Nh15_Slide.pptx).
+>
+> **Phạm vi kết quả:** số liệu Cardiff là đánh giá offline trên tập test công bố. Số liệu PID đo trên máy phát triển với chương trình mô phỏng vô hại (không phải malware thật, không chạy trong VM cô lập); nhãn do script điều phối gán. Số liệu synthetic chỉ dùng kiểm tra demo.
 
 ## Cấu trúc thư mục
 
@@ -40,9 +45,9 @@ main.py, web_app.py         Launcher tương thích ở thư mục gốc
 |---|---|---|
 | 1. Cơ sở lý thuyết, chọn dataset/paper | **Đã làm phần kỹ thuật** | Chọn Cardiff Dataset 2 và paper về early malware prediction bằng RNN; [docs/DATASET_CARDIFF.md](docs/DATASET_CARDIFF.md) ghi dataset/paper, [docs/ARCHITECTURE_AND_THEORY.md](docs/ARCHITECTURE_AND_THEORY.md) mô tả kiến trúc, MITRE ATT&CK, Sysinternals, tín hiệu và giới hạn. Nhóm vẫn cần đưa nội dung vào mẫu báo cáo/trình bày theo yêu cầu lớp. |
 | 2. Thu thập và hiển thị tiến trình live | **Đã làm một phần** | Desktop và web thu thập PID/PPID, tên/đường dẫn/command line, thời gian chạy, CPU/RAM, threads, handles, kết nối, cây tiến trình và cập nhật mỗi 3 giây. Đã bổ sung trung bình/đỉnh CPU-RAM trên 5 lần quét gần nhất và tốc độ byte/I/O operation. Desktop có kiểm tra Authenticode/hash/Run keys/Scheduled Tasks, ProcMon CSV và memory metadata. Có capture ProcMon tự động tối đa 60 giây/256 MiB rồi export CSV. Sysmon Event ID 1/3/8/10/11/12/13/14/22/25 được đọc thủ công. Chưa thu thập API/system call trực tiếp, chưa so sánh nội dung vùng nhớ với file/module, chưa theo dõi tự động mọi thao tác file/Registry. |
-| 3. Dataset và feature engineering | **Đã làm một phần** | Có pipeline tải/EDA/huấn luyện Cardiff; desktop lưu PID observations kèm nguồn gán nhãn do người vận hành nhập, fixture synthetic và safe workload giới hạn có JSON run log. Feature PID gồm nhóm đường dẫn, signature/autorun/Scheduled Task/Sysmon khi đã kiểm tra, runtime rolling stats, I/O, network và parent/process tree. ProcMon CSV được tổng hợp để đối chiếu, chưa đưa vào model. **Chưa có dataset PID lab thật đã thu thập, nhãn được nhóm xác minh hoặc metric live**; provenance nhập tay không phải ground-truth độc lập. |
-| 4. Huấn luyện và so sánh ML | **Đã làm cho Cardiff** | Đã đánh giá Decision Tree, Random Forest, Extra Trees và Isolation Forest; có metric, confusion matrix, feature importance và đánh giá cửa sổ 1–5 giây. Có pipeline riêng cho PID, nhưng cần dữ liệu thật do nhóm thu thập. Script GRU theo hướng paper là tùy chọn, chưa có kết quả GRU được báo cáo ở đây. |
-| 5. Tích hợp và kiểm thử hệ thống | **Đã làm một phần** | Dashboard web và desktop chạy live/demo; có nút tra cứu SHA-256 VirusTotal (không upload file), cách ly file có xác minh hash và khôi phục, kèm xác nhận người dùng. Rule và PID model lab được tích hợp vào chấm điểm live; desktop xác nhận trước khi kết thúc PID. Model Cardiff chỉ phục vụ nghiên cứu telemetry, **không** chấm từng PID. Đã có code cho safe lab JSON evidence, capture ProcMon và benchmark dài hạn; chưa chạy trong VM, chưa có ảnh chụp/metric/false-positive thực nghiệm hoặc xác nhận Atomic Red Team. |
+| 3. Dataset và feature engineering | **Đã làm** | Cardiff: tải, làm sạch, EDA đầy đủ (`scripts/eda_cardiff_full.py`, [docs/DATASET_CARDIFF.md](docs/DATASET_CARDIFF.md)). PID: 30.202 snapshot (26.716 benign, 3.486 mô phỏng) từ 141 file thực thi qua 11 phiên huấn luyện và 3 phiên đánh giá; nhãn có `label_source` và `scenario_manifest.json`; 5 chương trình C# mô phỏng vô hại trong [lab/simulations/](lab/simulations/README.md); 40 đặc trưng runtime/đường dẫn/quan hệ cha-con. Chưa chạy Atomic Red Team hay mã độc thật; chưa chạy trong VM cô lập. |
+| 4. Huấn luyện và so sánh ML | **Đã làm** | Cardiff: 11 mô hình cửa sổ 5 giây, tái lập bài báo (9 baseline + GRU A/B/C + ensemble), 2 mô hình nhẹ đề xuất (LiteSE-BiLSTM-Attn, Hybrid CNN-SE + XGBoost), validation 15% và tinh chỉnh siêu tham số. PID: 7 mô hình (DT, RF, ET, XGBoost, Isolation Forest, LiteSE, Hybrid), kiểm định chéo theo nhóm, tinh chỉnh, leave-one-out theo kỹ thuật và phát hiện sớm theo số snapshot. |
+| 5. Tích hợp và kiểm thử hệ thống | **Đã làm** | Extra Trees + rule (max) chấm điểm live; phiên đánh giá với tiến trình mới: recall 0,75, precision 1,0, FPR 0%. Có ảnh dashboard/desktop, `detections.jsonl`, benchmark 15 phút (quét ~127 ms, CPU ~11% một lõi, RAM ~160 MB) và 21 unit test. Model Cardiff chỉ phục vụ nghiên cứu, **không** chấm từng PID. Chưa xác minh trong VM. |
 
 Xem [kiến trúc và cơ sở lý thuyết](docs/ARCHITECTURE_AND_THEORY.md) để biết luồng module, cách diễn giải tín hiệu và danh sách giới hạn kỹ thuật.
 
@@ -176,14 +181,37 @@ Kết quả nằm trong `artifacts/reports/cardiff/`:
 - Có thể tạo lại các biểu đồ từ CSV/JSON đã có mà không huấn luyện lại: `python scripts/plot_cardiff_results.py`.
 - Mỗi lượt train có log JSONL trong `artifacts/logs/cardiff_training_<run_id>.jsonl`, checkpoint từng mô hình và `checkpoint.json` trong `artifacts/models/cardiff/runs/<run_id>/`; báo cáo theo lượt nằm trong `artifacts/reports/cardiff/runs/<run_id>/`. Các file mới nhất cũng được sao chép vào đường dẫn ổn định phía trên.
 
-### GRU theo paper
+### Tái lập bài báo và mô hình nhẹ đề xuất
 
-Có mã tùy chọn để thử mô hình GRU và notebook, nhưng kết quả GRU chưa được đưa vào bảng trên. Khi cài PyTorch:
+Thiết lập giống bài báo: dùng tập test công bố (521 mẫu: 206 benign, 315 malicious), tách thêm **15% train làm validation** phân tầng theo nhãn (3.484 train / 615 validation), đánh giá tại từng giây t = 0..19 (giây t dùng t+1 snapshot). Baseline (RF, J48, GBDT, SVM, NB, KNN, MLP, AdaBoost, XGBoost) được huấn luyện lại tại mỗi giây và chạy 10-fold CV trên train; GRU A/B/C theo Table 13 của bài báo, ensemble lấy max xác suất, ngưỡng 0,5. Mô hình học sâu chạy 3 seed (42/43/44), early stopping (patience 15) và ReduceLROnPlateau.
 
-    python -m pip install -r requirements-rnn.txt
-    python scripts/train_cardiff_gru.py --seconds 5
+Hai mô hình nhẹ đề xuất:
 
-Đây là triển khai lại theo mô tả paper, không phải mã chính thức của tác giả. Chỉ thêm kết quả GRU vào báo cáo sau khi chạy được trên dataset và lưu metric/artifact tương ứng.
+- **LiteSE-BiLSTM-Attn:** Conv1D + BatchNorm + Squeeze-and-Excitation → BiLSTM → multi-head attention pooling (~35 nghìn tham số, ít hơn GRU-B ~23 lần).
+- **Hybrid CNN-SE + XGBoost:** embedding 64 chiều từ LiteSE + 40 thống kê chuỗi (last/mean/max/slope) → XGBoost.
+
+| Mô hình (test, trung bình 3 seed) | Acc 1 giây | Acc 5 giây | FPR 5 giây | FNR 5 giây | Acc cao nhất (giây) | Tham số | Train (giây) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Random Forest | 83,3% | 91,6% | 6,3% | 9,8% | **96,7% (13)** | — | — |
+| XGBoost | 83,3% | 92,9% | 2,9% | 9,8% | 96,2% (16) | — | — |
+| GRU-A (bài báo) | 75,5% | 91,2% | 4,0% | 11,9% | 93,5% (18) | 237.245 | 174 |
+| GRU-B (bài báo) | 77,6% | 92,1% | 3,6% | 10,7% | 94,8% (19) | 795.477 | 378 |
+| GRU-C (bài báo) | 75,5% | 89,4% | 3,7% | 15,0% | 94,8% (13) | 350.611 | 78 |
+| Ensemble GRU max(A,B,C) | 77,2% | **93,3%** | 7,3% | **6,3%** | 95,9% (13) | 1.383.333 | 630 |
+| **Hybrid CNN-SE + XGBoost** (đề xuất) | 83,2% | 93,1% | **2,8%** | 9,6% | 95,6% (15) | 35.273 | 41 |
+| LiteSE-BiLSTM-Attn (đề xuất) | 77,5% | 89,7% | 3,6% | 14,7% | 93,9% (19) | 35.273 | 24 |
+
+- Ensemble GRU tái lập đạt 93,3% ở giây 5, sát mức ~94% của bài báo. Các baseline cổ điển của nhóm cao hơn bài báo (RF 96,7% so với 92,05% trong Table 6) do pipeline làm sạch và cách tính khác.
+- Hybrid đề xuất vượt ensemble của bài báo ở các giây đầu (1/2/3 giây: 83,2/88,6/91,2% so với 79,5/83,7/88,5%) với FPR chỉ 2,8% ở giây 5, trong khi nhẹ hơn ~39 lần và huấn luyện nhanh hơn ~15 lần.
+- **Tinh chỉnh** (random search 30 cấu hình LiteSE + 20 cấu hình đầu XGBoost, chọn theo validation): cấu hình tinh chỉnh nhỏ hơn (15.533 tham số) và tốt hơn trên validation nhưng **không tốt hơn trên test** (Hybrid 91,9% ở giây 5), nên giữ cấu hình mặc định.
+
+Chạy lại (cần PyTorch CPU: `python -m pip install -r requirements-rnn.txt`):
+
+    python scripts/cardiff_paper_benchmark.py            # baseline + GRU + mô hình đề xuất (--group classical|deep)
+    python scripts/tune_cardiff_best.py                  # tinh chỉnh siêu tham số
+    python scripts/plot_cardiff_paper.py                 # bảng so sánh với bài báo và biểu đồ
+
+Kết quả ghi vào `artifacts/reports/cardiff_paper/` (CSV được gitignore, chạy lại để tạo). Script cũ `scripts/train_cardiff_gru.py` vẫn giữ để tham khảo.
 
 ## Giám sát PID và dữ liệu nhóm tự thu thập
 
@@ -203,7 +231,39 @@ Pipeline PID yêu cầu cả hai nhãn, `label_source` không rỗng và tối t
 
 Metric PID sử dụng cùng hàm score và ngưỡng 0,65 với live; Isolation Forest dùng điểm sigmoid (không phải xác suất). Chọn model supervised bằng validation, test chỉ để báo cáo. Metric ML-only không thay thế đánh giá cảnh báo kết hợp rule+ML. Pipeline từ chối feature thiếu/không hữu hạn thay vì âm thầm bỏ hàng hoặc điền 0.
 
-**Trạng thái hiện tại:** chức năng thu thập và pipeline đã có, nhưng chưa có metric PID lab nào được báo cáo ở README vì chưa có dataset PID nhóm xác minh. Không dùng metric Cardiff hay synthetic để thay thế kết quả đó.
+### Bộ dữ liệu PID và kết quả mô hình
+
+Bộ dữ liệu cuối gồm **30.202 snapshot** (26.716 benign, 3.486 mô phỏng) của 496 instance tiến trình từ **141 file thực thi** (136 có snapshot lành tính, 6 có snapshot mô phỏng; `powershell.exe` thuộc cả hai lớp vì vừa chạy bình thường vừa được Word giả sinh ra), thu bằng `scripts/run_pid_lab_experiment.py`. Tập được chia theo file thực thi, không file nào nằm ở hai tập:
+
+| Tập | File lành tính | File mô phỏng | Snapshot |
+|---|---:|---:|---:|
+| Train | 69 | 2 (invoice_viewer, powershell) | 11.176 |
+| Validation | 34 | 1 (winupdater) | 4.285 |
+| Test | 33 | 3 (svch0st, expl0rer, WINWORD) | 14.741 |
+
+Ngoài 4 mô hình gốc, `scripts/pid_model_benchmark.py` bổ sung XGBoost và hai mô hình chuỗi trên **cửa sổ 8 snapshot gần nhất** của mỗi tiến trình (log1p + z-score, `pos_weight` cho lớp hiếm): LiteSE-BiLSTM-Attn và Hybrid CNN-SE + XGBoost. Vì validation chỉ có 1 file độc hại, việc chọn và tinh chỉnh mô hình dùng **kiểm định chéo theo nhóm** (StratifiedGroupKFold 3 fold trên train + validation) với mục tiêu average precision (AP).
+
+| Mô hình (test, ngưỡng 0,65) | Precision | Recall | F1 | FPR | Leave-one-out: phát hiện / FPR |
+|---|---:|---:|---:|---:|---:|
+| Decision Tree | 0,007 | 0,001 | 0,002 | 2,30% | — |
+| Random Forest | 0,000 | 0,000 | 0,000 | 0% | — |
+| **Extra Trees** (mô hình live) | **1,000** | 0,637 | 0,778 | **0%** | 42,8% / **0%** |
+| XGBoost | 0,020 | 0,001 | 0,002 | 0,74% | 33,3% / 1,1% |
+| Isolation Forest (không giám sát) | 0,000 | 0,000 | 0,000 | 0,72% | — |
+| LiteSE-BiLSTM-Attn (3 seed) | 0,990 | 0,637 | 0,775 | 0,08% | 33,3% / 0,1% |
+| Hybrid CNN-SE + XGBoost (3 seed) | 0,931 | **0,879** | **0,890** | 1,04% | **50,0%** / 1,0% |
+
+- Hybrid bắt được nhiều kỹ thuật nhất, kể cả `expl0rer.exe` (sinh tiến trình con liên tục) mà mọi mô hình một snapshot đều bỏ sót, nhưng FPR ~1% (≈4 báo nhầm mỗi lần quét ~390 tiến trình) và dao động theo seed.
+- Phát hiện sớm: mô hình nào bắt được một chương trình thì bắt ngay từ snapshot đầu tiên, vì các dấu hiệu mạnh (đường dẫn Temp, tên giả, cha là Office) có sẵn từ đầu.
+- Tinh chỉnh (25 cấu hình ET, 15 XGBoost, 6 LiteSE, 15 đầu Hybrid) tăng AP kiểm định chéo nhưng không cải thiện test, do train + validation chỉ có 3 kỹ thuật độc hại.
+- Chấm offline phiên đánh giá mới: Extra Trees và Hybrid cùng bắt 3/4 tiến trình mô phỏng, 0 báo nhầm; LiteSE và XGBoost bắt 2/4.
+
+**Kết luận:** hệ thống live giữ **Extra Trees** kết hợp rule theo max(rule, ML) vì FPR 0% trên test, leave-one-out và phiên mới; Hybrid phù hợp làm tín hiệu thứ hai để ưu tiên điều tra.
+
+    python scripts/pid_model_benchmark.py --stage all    # base | tune | extra | all; --quick để chạy thử
+    python scripts/plot_pid_models.py
+
+Kết quả ghi vào `artifacts/reports/pid_paper/`. Kiểm thử tích hợp trên phiên mới (`scripts/evaluate_pid_sessions.py`, kết quả trong `artifacts/reports/pid_eval_final/`): riêng rule recall 0,25; ML và kết hợp recall 0,75, precision 1,0, FPR 0% (snapshot và instance).
 
 ### Kết quả synthetic demo — chỉ minh họa
 
@@ -237,7 +297,13 @@ Các mẫu được tạo theo luật của demo nên dễ phân tách và khôn
 
 Các thao tác lab và dịch vụ bên ngoài chưa được thực thi trên máy phát triển. Hash lookup dùng endpoint file report của VirusTotal; tài liệu API cảnh báo chỉ báo cáo hash công khai và không truy vấn indicator nhạy cảm. ProcMon capture cần quyền/driver hoạt động trên Windows và phải được chạy trong VM. CSV/JSON/PML lab và thư mục quarantine được gitignore mặc định vì có thể chứa telemetry hoặc file nhạy cảm; khi nộp bài, chọn lọc và làm sạch bản minh chứng cần thiết.
 
-## Các bước còn lại để hoàn thiện đồ án
+## Hạn chế và hướng phát triển
+
+- Dữ liệu PID thu trên máy phát triển, chưa chạy trong VM cô lập; lớp độc hại chỉ có 6 file thực thi mô phỏng nên kết quả leave-one-out còn dao động lớn.
+- Chưa chạy Atomic Red Team hay mã độc thật; chưa mô phỏng persistence và injection thật (cố ý tránh để an toàn).
+- Hướng tiếp theo: đưa Hybrid CNN-SE + XGBoost vào luồng live như tín hiệu thứ hai trên chuỗi snapshot của từng tiến trình; hiệu chuẩn ngưỡng và chia validation theo thời gian khi có thêm dữ liệu độc hại.
+
+## Quy trình lab và kiểm thử
 
 Các công cụ bổ sung cho phần PID: `scripts/analyze_pid_data.py` tạo EDA; `scripts/train_pid_models.py` huấn luyện và xuất biểu đồ; `scripts/evaluate_pid_sessions.py` so sánh rule/ML/kết hợp trên phiên mới. Notebook tương ứng: `notebooks/pid_lab_eda_training.ipynb`. Chạy `python scripts/verify_project.py` để lưu kết quả kiểm thử phần mềm, sau đó `python scripts/build_project_report.py` để cập nhật [báo cáo tổng hợp](docs/BAO_CAO_TONG_HOP.md) từ artifact có thật. Xem [quy trình lab](docs/LAB_WORKFLOW.md) cho lệnh và giới hạn đánh giá.
 
@@ -265,6 +331,12 @@ Quy trình thao tác đầy đủ ở [docs/LAB_WORKFLOW.md](docs/LAB_WORKFLOW.m
 | process_guard/demo.py, scripts/run_demo.py | Fixture và demo an toàn. |
 | scripts/eda.py, train_models.py, train_cardiff_models.py | EDA và huấn luyện Cardiff. |
 | scripts/train_pid_models.py | Huấn luyện từ quan sát PID có nhãn/nguồn và xuất metric, confusion matrix, audit nhãn. |
+| process_guard/cardiff_deep.py | Mô hình PyTorch: GRU theo bài báo, LiteSE-BiLSTM-Attn, các biến thể ablation; huấn luyện có early stopping và trích embedding cho Hybrid. |
+| scripts/cardiff_paper_benchmark.py, tune_cardiff_best.py, plot_cardiff_paper.py | Tái lập thí nghiệm bài báo trên Cardiff, tinh chỉnh mô hình đề xuất, bảng/biểu đồ đối chiếu. |
+| process_guard/pid_sequence.py | Tạo cửa sổ k snapshot theo từng instance tiến trình (PID + create_time). |
+| scripts/pid_model_benchmark.py, plot_pid_models.py | So sánh 7 mô hình trên dữ liệu PID, tinh chỉnh theo kiểm định chéo nhóm, leave-one-out, chấm phiên đánh giá mới. |
+| scripts/run_pid_lab_experiment.py, lab/simulations/ | Điều phối phiên thu thập và 5 chương trình C# mô phỏng hành vi vô hại. |
+| scripts/evaluate_pid_sessions.py, filter_new_instances.py, pid_leave_one_out.py | Đánh giá rule/ML/kết hợp trên phiên mới và leave-one-executable-out. |
 | scripts/safe_behavior_lab.py | Tạo child process tải CPU/I/O giới hạn và loopback; ghi JSON run log, không có payload/injection/persistence. |
 | scripts/benchmark_monitor.py | Benchmark collector dài hạn ra CSV + metadata JSON; script chưa được chạy trong VM. |
 | notebooks/cardiff_eda_training.ipynb | Notebook EDA/huấn luyện. |
