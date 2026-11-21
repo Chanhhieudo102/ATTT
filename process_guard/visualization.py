@@ -33,7 +33,9 @@ MODEL_FILES = {
     "LightGBM": "lightgbm",
     "Logistic Regression": "logistic_regression",
     "RBF SVM": "rbf_svm",
+    "MLP Neural Network": "mlp",
     "Isolation Forest (unsupervised)": "isolation_forest",
+    "One-Class SVM (unsupervised)": "one_class_svm",
 }
 
 

@@ -26,6 +26,11 @@ FEATURE_COLUMNS = [
     "parent_is_script_host", "runtime_minutes",
 ]
 
+# Process age is still collected and shown, but PID models must not learn it: in the lab every
+# simulated process is freshly started, so age would leak the label instead of describing behaviour.
+PID_MODEL_EXCLUDED = {"runtime_minutes"}
+PID_MODEL_FEATURES = [column for column in FEATURE_COLUMNS if column not in PID_MODEL_EXCLUDED]
+
 SYSTEM_NAMES = {
     "svchost.exe", "services.exe", "lsass.exe", "winlogon.exe", "csrss.exe",
     "smss.exe", "wininit.exe", "explorer.exe", "system", "system idle process",

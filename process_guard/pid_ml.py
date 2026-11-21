@@ -11,11 +11,12 @@ import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, IsolationForest, RandomForestClassifier
 from sklearn.metrics import (accuracy_score, classification_report, confusion_matrix,
                              f1_score, precision_score, recall_score)
-from sklearn.model_selection import GroupShuffleSplit
+from sklearn.base import clone
+from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
 from sklearn.tree import DecisionTreeClassifier
 
 from .benchmark import batch_inference_ms_per_sample
-from .features import FEATURE_COLUMNS
+from .features import FEATURE_COLUMNS, PID_MODEL_FEATURES
 from .ml import ALERT_THRESHOLD, model_scores
 from .pid_data import load_observations
 
@@ -49,6 +50,27 @@ def grouped_partitions(X, y, groups):
     raise ValueError("Không tìm được train/validation/test có đủ hai lớp; cần thêm executable độc lập cho mỗi lớp.")
 
 
+def grouped_cv_f1(model, X, y, groups, unsupervised: bool = False) -> float:
+    """Mean F1 over StratifiedGroupKFold folds (no executable crosses train/held-out)."""
+    malicious_groups = pd.Series(groups[y == 1]).nunique()
+    benign_groups = pd.Series(groups[y == 0]).nunique()
+    n_splits = int(min(5, malicious_groups, benign_groups))
+    if n_splits < 2:
+        return float("nan")
+    scores = []
+    for fit_index, held_index in StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42).split(X, y, groups):
+        if set(y[held_index]) != {0, 1} or (not unsupervised and set(y[fit_index]) != {0, 1}):
+            continue
+        fold_model = clone(model)
+        if unsupervised:
+            fold_model.fit(X.iloc[fit_index][y[fit_index] == 0])
+        else:
+            fold_model.fit(X.iloc[fit_index], y[fit_index])
+        predicted = (model_scores(fold_model, X.iloc[held_index], unsupervised) >= ALERT_THRESHOLD).astype(int)
+        scores.append(f1_score(y[held_index], predicted, zero_division=0))
+    return float(np.mean(scores)) if scores else float("nan")
+
+
 def train_labeled_samples(source: str | Path | list[Path] = ROOT / "data/observations/collected_samples.csv",
                           model_dir: str | Path = MODEL_DIR,
                           report_dir: str | Path = REPORT_DIR) -> pd.DataFrame:
@@ -60,7 +82,7 @@ def train_labeled_samples(source: str | Path | list[Path] = ROOT / "data/observa
     if min(groups_per_class.get(0, 0), groups_per_class.get(1, 0)) < 3:
         raise ValueError("Cần ít nhất 3 đường dẫn executable khác nhau cho mỗi nhãn để tách train/validation/test.")
 
-    X = data[FEATURE_COLUMNS].apply(pd.to_numeric, errors="coerce")
+    X = data[PID_MODEL_FEATURES].apply(pd.to_numeric, errors="coerce")
     if not np.isfinite(X.to_numpy()).all():
         raise ValueError("Feature thiếu, không phải số hoặc vô hạn; hãy kiểm tra/thu thập lại thay vì tự điền 0.")
     y = data["label"].to_numpy()
@@ -88,7 +110,7 @@ def train_labeled_samples(source: str | Path | list[Path] = ROOT / "data/observa
         "train_executable_count": int(pd.Series(groups[train_index]).nunique()),
         "test_executable_count": int(pd.Series(groups[test_index]).nunique()),
         "split": "Grouped train/validation/test by normalized process_path; no path crosses partitions",
-        "model_selection": "Highest validation F1 among supervised models; test is reporting only",
+        "model_selection": "Highest grouped-CV F1 (StratifiedGroupKFold by executable on train+validation) among supervised models; final model refit on train+validation; test is reporting only",
         "alert_threshold": ALERT_THRESHOLD,
         "score_note": "Same scores/threshold as live ML; combined rule+ML alerts require separate evaluation. Isolation score is not a probability.",
         "label_source_note": "Source text is operator-provided provenance, not an independent ground-truth attestation.",
@@ -113,16 +135,24 @@ def train_labeled_samples(source: str | Path | list[Path] = ROOT / "data/observa
     }
     results = []
     best_name, best_f1 = "", -1.0
+    # With only a handful of malicious executables a single validation partition can hold one
+    # executable, which makes selection noisy. Select on grouped CV over train+validation, then
+    # refit on that development set; the test partition is still used for reporting only.
+    development_index = np.concatenate([train_index, validation_index])
+    X_development, y_development = X.iloc[development_index], y[development_index]
+    groups_development = groups[development_index]
     for name, model in classifiers.items():
-        model.fit(X_train, y_train)
+        probe = clone(model).fit(X_train, y_train)
+        validation = _metrics(y_validation, (model_scores(probe, X_validation) >= ALERT_THRESHOLD).astype(int))
+        cv_f1 = grouped_cv_f1(model, X_development, y_development, groups_development)
+        model.fit(X_development, y_development)
         prediction = (model_scores(model, X_test) >= ALERT_THRESHOLD).astype(int)
-        validation = _metrics(y_validation, (model_scores(model, X_validation) >= ALERT_THRESHOLD).astype(int))
         row = {"model": name, **_metrics(y_test, prediction),
-               "threshold": ALERT_THRESHOLD, "validation_f1": validation["f1"],
+               "threshold": ALERT_THRESHOLD, "validation_f1": validation["f1"], "cv_f1": cv_f1,
                "inference_ms_per_sample": batch_inference_ms_per_sample(model, X_test)}
         results.append(row)
         safe_name = name.lower().replace(" ", "_")
-        joblib.dump({"model": model, "features": FEATURE_COLUMNS, "threshold": ALERT_THRESHOLD,
+        joblib.dump({"model": model, "features": PID_MODEL_FEATURES, "threshold": ALERT_THRESHOLD,
                      **audit_hashes,
                      "name": name, "source": "observed-per-process",
                      "split": dataset_summary["split"]}, model_dir / f"{safe_name}.joblib")
@@ -134,21 +164,25 @@ def train_labeled_samples(source: str | Path | list[Path] = ROOT / "data/observa
                   "train_group_count": int(pd.Series(groups[train_index]).nunique()),
                   "dataset_summary": dataset_summary}
         (report_dir / f"{safe_name}_confusion.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-        pd.DataFrame({"feature": FEATURE_COLUMNS, "importance": model.feature_importances_}).sort_values(
+        pd.DataFrame({"feature": PID_MODEL_FEATURES, "importance": model.feature_importances_}).sort_values(
             "importance", ascending=False).to_csv(report_dir / f"{safe_name}_feature_importance.csv", index=False)
-        if validation["f1"] > best_f1:
-            best_name, best_f1 = safe_name, validation["f1"]
+        selection_score = cv_f1 if np.isfinite(cv_f1) else validation["f1"]  # too few groups for CV
+        if selection_score > best_f1:
+            best_name, best_f1 = safe_name, selection_score
 
     benign_train = X_train.iloc[np.where(y_train == 0)[0]]
+    anomaly_probe = IsolationForest(n_estimators=250, contamination="auto", random_state=42).fit(benign_train)
     anomaly = IsolationForest(n_estimators=250, contamination="auto", random_state=42)
-    anomaly.fit(benign_train)
+    anomaly_cv_f1 = grouped_cv_f1(anomaly, X_development, y_development, groups_development, unsupervised=True)
+    anomaly.fit(X_development.iloc[np.where(y_development == 0)[0]])
     anomaly_prediction = (model_scores(anomaly, X_test, True) >= ALERT_THRESHOLD).astype(int)
     anomaly_row = {"model": "Isolation Forest (unsupervised)", **_metrics(y_test, anomaly_prediction),
                    "threshold": ALERT_THRESHOLD,
-                   "validation_f1": _metrics(y_validation, (model_scores(anomaly, X_validation, True) >= ALERT_THRESHOLD).astype(int))["f1"],
+                   "validation_f1": _metrics(y_validation, (model_scores(anomaly_probe, X_validation, True) >= ALERT_THRESHOLD).astype(int))["f1"],
+                   "cv_f1": anomaly_cv_f1,
                    "inference_ms_per_sample": batch_inference_ms_per_sample(anomaly, X_test)}
     results.append(anomaly_row)
-    joblib.dump({"model": anomaly, "features": FEATURE_COLUMNS, "threshold": ALERT_THRESHOLD,
+    joblib.dump({"model": anomaly, "features": PID_MODEL_FEATURES, "threshold": ALERT_THRESHOLD,
                  **audit_hashes,
                  "name": "Isolation Forest", "unsupervised": True,
                  "source": "observed-per-process", "split": dataset_summary["split"]},

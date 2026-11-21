@@ -1,0 +1,107 @@
+﻿                   rows  executables
+partition  label                    
+test       0      12996           33
+           1       1745            3
+train      0      10066           69
+           1       1110            2
+validation 0       3654           34
+           1        631            1
+[flat] Decision Tree: cv=(0.1756437021572721, 0.19123843890874795) 0.001/0.0230
+[flat] Random Forest: cv=(0.0, 0.6293564945316493) 0.000/0.0000
+[flat] Extra Trees: cv=(0.0, 0.283341114227278) 0.637/0.0000
+[flat] XGBoost: cv=(0.1780976573525261, 0.5223287568423264) 0.001/0.0074
+[seq] seed=42 lite 0.637/0.0008 hybrid 1.000/0.0059 epochs=11
+[seq] seed=43 lite 0.637/0.0008 hybrid 1.000/0.0242 epochs=11
+[seq] seed=44 lite 0.637/0.0008 hybrid 0.637/0.0011 epochs=11
+[seq] grouped CV {'lite_f1': 0.0, 'lite_ap': 0.1142351668141909, 'hyb_f1': 0.0, 'hyb_ap': 0.47980788047578155} (fixed 11 epochs)
+[tune-et] 0 f1=0.000 ap=0.112 {'n_estimators': 150, 'min_samples_leaf': 2, 'max_features': 0.8, 'class_weight': None}
+[tune-et] 1 f1=0.000 ap=0.155 {'n_estimators': 400, 'min_samples_leaf': 1, 'max_features': 0.3, 'class_weight': None}
+[tune-et] 2 f1=0.000 ap=0.225 {'n_estimators': 150, 'min_samples_leaf': 4, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+[tune-et] 3 f1=0.000 ap=0.233 {'n_estimators': 600, 'min_samples_leaf': 8, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+[tune-et] 4 f1=0.000 ap=0.112 {'n_estimators': 400, 'min_samples_leaf': 2, 'max_features': 0.5, 'class_weight': None}
+[tune-et] 5 f1=0.000 ap=0.265 {'n_estimators': 150, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'class_weight': 'balanced'}
+[tune-et] 6 f1=0.000 ap=0.241 {'n_estimators': 250, 'min_samples_leaf': 8, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+[tune-et] 7 f1=0.000 ap=0.316 {'n_estimators': 600, 'min_samples_leaf': 4, 'max_features': 'log2', 'class_weight': 'balanced'}
+[tune-et] 8 f1=0.000 ap=0.349 {'n_estimators': 400, 'min_samples_leaf': 4, 'max_features': 'sqrt', 'class_weight': None}
+[tune-et] 9 f1=0.000 ap=0.112 {'n_estimators': 250, 'min_samples_leaf': 8, 'max_features': 0.8, 'class_weight': None}
+[tune-et] 10 f1=0.000 ap=0.112 {'n_estimators': 150, 'min_samples_leaf': 4, 'max_features': 0.8, 'class_weight': None}
+[tune-et] 11 f1=0.000 ap=0.388 {'n_estimators': 600, 'min_samples_leaf': 4, 'max_features': 0.3, 'class_weight': 'balanced_subsample'}
+[tune-et] 12 f1=0.000 ap=0.250 {'n_estimators': 400, 'min_samples_leaf': 2, 'max_features': 0.3, 'class_weight': None}
+[tune-et] 13 f1=0.000 ap=0.149 {'n_estimators': 400, 'min_samples_leaf': 1, 'max_features': 0.3, 'class_weight': 'balanced'}
+[tune-et] 14 f1=0.000 ap=0.112 {'n_estimators': 150, 'min_samples_leaf': 1, 'max_features': 0.5, 'class_weight': None}
+[tune-et] 15 f1=0.000 ap=0.161 {'n_estimators': 600, 'min_samples_leaf': 2, 'max_features': 0.5, 'class_weight': None}
+[tune-et] 16 f1=0.000 ap=0.235 {'n_estimators': 400, 'min_samples_leaf': 8, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+[tune-et] 17 f1=0.000 ap=0.405 {'n_estimators': 250, 'min_samples_leaf': 2, 'max_features': 0.8, 'class_weight': 'balanced'}
+[tune-et] 18 f1=0.000 ap=0.174 {'n_estimators': 600, 'min_samples_leaf': 4, 'max_features': 0.5, 'class_weight': None}
+[tune-et] 19 f1=0.000 ap=0.316 {'n_estimators': 600, 'min_samples_leaf': 4, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+[tune-et] 20 f1=0.000 ap=0.149 {'n_estimators': 400, 'min_samples_leaf': 1, 'max_features': 0.3, 'class_weight': 'balanced_subsample'}
+[tune-et] 21 f1=0.000 ap=0.194 {'n_estimators': 250, 'min_samples_leaf': 2, 'max_features': 0.3, 'class_weight': 'balanced_subsample'}
+[tune-et] 22 f1=0.000 ap=0.301 {'n_estimators': 150, 'min_samples_leaf': 8, 'max_features': 0.3, 'class_weight': 'balanced'}
+[tune-et] 23 f1=0.000 ap=0.409 {'n_estimators': 600, 'min_samples_leaf': 1, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+[tune-et] 24 f1=0.000 ap=0.112 {'n_estimators': 150, 'min_samples_leaf': 8, 'max_features': 0.8, 'class_weight': None}
+[tune-xgb] 0 f1=0.000 ap=0.363
+[tune-xgb] 1 f1=0.020 ap=0.476
+[tune-xgb] 2 f1=0.000 ap=0.286
+[tune-xgb] 3 f1=0.000 ap=0.371
+[tune-xgb] 4 f1=0.000 ap=0.324
+[tune-xgb] 5 f1=0.000 ap=0.511
+[tune-xgb] 6 f1=0.000 ap=0.444
+[tune-xgb] 7 f1=0.000 ap=0.386
+[tune-xgb] 8 f1=0.294 ap=0.541
+[tune-xgb] 9 f1=0.000 ap=0.396
+[tune-xgb] 10 f1=0.000 ap=0.466
+[tune-xgb] 11 f1=0.178 ap=0.484
+[tune-xgb] 12 f1=0.141 ap=0.463
+[tune-xgb] 13 f1=0.000 ap=0.375
+[tune-xgb] 14 f1=0.176 ap=0.464
+[tune-lite] 0 {'lite_f1': 0.0, 'lite_ap': 0.15147396612632977, 'hyb_f1': 0.04707379134860051, 'hyb_ap': 0.4825709601305135} {'weight_decay': 0.0, 'reduction': 2, 'lr': 0.0003, 'kernel': 5, 'hidden': 32, 'heads': 2, 'filters': 16, 'epochs': 8, 'dropout': 0.1, 'batch': 128}
+[tune-lite] 1 {'lite_f1': 0.0, 'lite_ap': 0.1472482754782668, 'hyb_f1': 0.0, 'hyb_ap': 0.18287470233926964} {'weight_decay': 0.0001, 'reduction': 2, 'lr': 0.003, 'kernel': 5, 'hidden': 32, 'heads': 2, 'filters': 32, 'epochs': 20, 'dropout': 0.1, 'batch': 64}
+[tune-lite] 2 {'lite_f1': 0.0, 'lite_ap': 0.2339790250541471, 'hyb_f1': 0.0, 'hyb_ap': 0.18424028615442503} {'weight_decay': 0.0001, 'reduction': 4, 'lr': 0.001, 'kernel': 5, 'hidden': 32, 'heads': 1, 'filters': 48, 'epochs': 20, 'dropout': 0.3, 'batch': 128}
+[tune-lite] 3 {'lite_f1': 0.0, 'lite_ap': 0.14382300231196363, 'hyb_f1': 0.0, 'hyb_ap': 0.2236609046540667} {'weight_decay': 0.0, 'reduction': 2, 'lr': 0.001, 'kernel': 5, 'hidden': 32, 'heads': 2, 'filters': 32, 'epochs': 20, 'dropout': 0.2, 'batch': 256}
+[tune-lite] 4 {'lite_f1': 0.0, 'lite_ap': 0.28001436221771575, 'hyb_f1': 0.0, 'hyb_ap': 0.24923552971616816} {'weight_decay': 1e-05, 'reduction': 4, 'lr': 0.001, 'kernel': 5, 'hidden': 16, 'heads': 2, 'filters': 48, 'epochs': 8, 'dropout': 0.1, 'batch': 128}
+[tune-lite] 5 {'lite_f1': 0.0, 'lite_ap': 0.7585811689242551, 'hyb_f1': 0.9051742486650426, 'hyb_ap': 0.9489492524022104} {'weight_decay': 0.0001, 'reduction': 4, 'lr': 0.001, 'kernel': 5, 'hidden': 16, 'heads': 1, 'filters': 32, 'epochs': 20, 'dropout': 0.3, 'batch': 128}
+[tune-head] 0 f1=0.905 ap=0.858
+[tune-head] 1 f1=0.870 ap=0.840
+[tune-head] 2 f1=0.825 ap=0.958
+[tune-head] 3 f1=0.834 ap=0.779
+[tune-head] 4 f1=0.834 ap=0.839
+[tune-head] 5 f1=0.870 ap=0.821
+[tune-head] 6 f1=0.868 ap=0.844
+[tune-head] 7 f1=0.867 ap=0.995
+[tune-head] 8 f1=0.834 ap=0.843
+[tune-head] 9 f1=0.869 ap=0.837
+[tune-head] 10 f1=0.834 ap=0.808
+[tune-head] 11 f1=0.905 ap=0.962
+[tune-head] 12 f1=0.834 ap=0.838
+[tune-head] 13 f1=0.834 ap=0.779
+[tune-head] 14 f1=0.905 ap=0.950
+[flat] Decision Tree: cv=(0.1756437021572721, 0.19123843890874795) 0.001/0.0230
+[flat] Random Forest: cv=(0.0, 0.6293564945316493) 0.000/0.0000
+[flat] Extra Trees (tinh chỉnh): cv=(0.0, 0.4094194530730144) 0.637/0.0000
+[flat] XGBoost (tinh chỉnh): cv=(0.2937352245862884, 0.5411650913395465) 0.001/0.0230
+[seq] seed=42 lite 0.637/0.0008 hybrid 0.989/0.0264 epochs=11
+[seq] seed=43 lite 0.637/0.0008 hybrid 0.637/0.0076 epochs=11
+[seq] seed=44 lite 0.637/0.0008 hybrid 0.764/0.0085 epochs=11
+[seq] grouped CV {'lite_f1': 0.0, 'lite_ap': 0.5307283397694306, 'hyb_f1': 0.48069490895577854, 'hyb_ap': 0.5117412230848446} (fixed 11 epochs)
+[loo] expl0rer.exe: Extra Trees=0.00, XGBoost=0.00, Extra Trees (tinh chỉnh)=0.00, LiteSE-BiLSTM-Attn=0.00, Hybrid CNN-SE + XGBoost=1.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=0.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=0.00
+[loo] invoice_viewer.exe: Extra Trees=0.57, XGBoost=0.00, Extra Trees (tinh chỉnh)=0.57, LiteSE-BiLSTM-Attn=0.00, Hybrid CNN-SE + XGBoost=0.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=0.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=0.00
+[loo] svch0st.exe: Extra Trees=1.00, XGBoost=1.00, Extra Trees (tinh chỉnh)=1.00, LiteSE-BiLSTM-Attn=1.00, Hybrid CNN-SE + XGBoost=1.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=1.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=1.00
+[loo] winword.exe: Extra Trees=1.00, XGBoost=1.00, Extra Trees (tinh chỉnh)=1.00, LiteSE-BiLSTM-Attn=1.00, Hybrid CNN-SE + XGBoost=1.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=1.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=1.00
+[loo] winupdater.exe: Extra Trees=0.00, XGBoost=0.00, Extra Trees (tinh chỉnh)=0.00, LiteSE-BiLSTM-Attn=0.00, Hybrid CNN-SE + XGBoost=0.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=0.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=0.00
+[loo] powershell.exe: Extra Trees=0.00, XGBoost=0.00, Extra Trees (tinh chỉnh)=0.00, LiteSE-BiLSTM-Attn=0.00, Hybrid CNN-SE + XGBoost=0.00, LiteSE-BiLSTM-Attn (tinh chỉnh)=0.00, Hybrid CNN-SE + XGBoost (tinh chỉnh)=0.00
+                                   model      unit  recall  fpr
+0                            Extra Trees  snapshot    0.75  0.0
+1                            Extra Trees  instance    0.75  0.0
+2                                XGBoost  snapshot    0.50  0.0
+3                                XGBoost  instance    0.50  0.0
+4               Extra Trees (tinh chỉnh)  snapshot    0.75  0.0
+5               Extra Trees (tinh chỉnh)  instance    0.75  0.0
+6                     LiteSE-BiLSTM-Attn  snapshot    0.50  0.0
+7                     LiteSE-BiLSTM-Attn  instance    0.50  0.0
+8                Hybrid CNN-SE + XGBoost  snapshot    0.75  0.0
+9                Hybrid CNN-SE + XGBoost  instance    0.75  0.0
+10       LiteSE-BiLSTM-Attn (tinh chỉnh)  snapshot    0.50  0.0
+11       LiteSE-BiLSTM-Attn (tinh chỉnh)  instance    0.50  0.0
+12  Hybrid CNN-SE + XGBoost (tinh chỉnh)  snapshot    0.75  0.0
+13  Hybrid CNN-SE + XGBoost (tinh chỉnh)  instance    0.75  0.0
+done

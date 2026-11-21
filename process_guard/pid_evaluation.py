@@ -67,7 +67,7 @@ def evaluate_observations(sources, output: Path, model_dir: Path,
             overlap["process_identity_audit_available"] = True
         model_path = Path(model_dir) / (Path(model_dir) / "active_model.txt").read_text(encoding="utf-8").strip()
         bundle_hash = hashlib.sha256(model_path.read_bytes()).hexdigest()
-        if list(scorer.bundle["features"]) != FEATURE_COLUMNS:
+        if not set(scorer.bundle["features"]) <= set(FEATURE_COLUMNS):
             raise ValueError("Feature schema của model không khớp; hãy huấn luyện lại.")
 
     predictions = data.copy()
@@ -75,7 +75,7 @@ def evaluate_observations(sources, output: Path, model_dir: Path,
     predictions["rule_score_current"] = rules
     score_columns = {"rules": "rule_score_current"}
     if scorer.bundle:
-        predictions["ml_score_current"] = model_scores(scorer.bundle["model"], data[FEATURE_COLUMNS],
+        predictions["ml_score_current"] = model_scores(scorer.bundle["model"], data[list(scorer.bundle["features"])],
                                                        bool(scorer.bundle.get("unsupervised")))
         predictions["combined_score_current"] = np.maximum(rules, predictions.ml_score_current)
         score_columns.update(ml="ml_score_current", combined="combined_score_current")

@@ -59,7 +59,7 @@ class PIDPipelineTests(unittest.TestCase):
         labels = self.data.loc[manifest.partition.eq("test"), "label"].to_numpy()
         for name in ("decision_tree", "random_forest", "extra_trees", "isolation_forest"):
             bundle = joblib.load(self.models / f"{name}.joblib")
-            scores = model_scores(bundle["model"], test, bundle.get("unsupervised", False))
+            scores = model_scores(bundle["model"], test[bundle["features"]], bundle.get("unsupervised", False))
             prediction = scores >= ALERT_THRESHOLD
             expected = [[int(((labels == actual) & (prediction == predicted)).sum())
                          for predicted in (0, 1)] for actual in (0, 1)]
@@ -69,10 +69,10 @@ class PIDPipelineTests(unittest.TestCase):
             scorer = ModelScorer(self.models, allowed_sources={"observed-per-process"})
             scorer.bundle = bundle
             record = {"exe": "C:/lab/test.exe", "cpu_percent": 85, "thread_count": 62}
-            features = pd.DataFrame([extract_features(record)])[FEATURE_COLUMNS]
+            features = pd.DataFrame([extract_features(record)])[bundle["features"]]
             self.assertAlmostEqual(scorer.score(record)[0], model_scores(bundle["model"], features,
                                    bundle.get("unsupervised", False))[0])
-        best = comparison.iloc[comparison.iloc[:3].validation_f1.argmax()]["model"].lower().replace(" ", "_")
+        best = comparison.iloc[comparison.iloc[:3].cv_f1.argmax()]["model"].lower().replace(" ", "_")
         self.assertEqual((self.models / "active_model.txt").read_text().strip(), best + ".joblib")
 
     def test_invalid_samples_are_rejected_before_writing_models(self):

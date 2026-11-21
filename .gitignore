@@ -10,7 +10,22 @@ artifacts/reports/**/*.jsonl
 artifacts/reports/**/*.pml
 artifacts/logs/*.jsonl
 artifacts/quarantine/
-data/observations/*.csv
-data/observations/*.json
-data/observations/*.tmp
+# Labeled lab sessions contain local paths and process lists; keep them out of the repo.
+data/observations/**/*.csv
+data/observations/**/*.json
+data/observations/**/*.tmp
 data/fixtures/synthetic_demo/*.csv
+
+# Build outputs of the .NET lab simulations (also ignored by lab/simulations/.gitignore)
+lab/simulations/**/bin/
+lab/simulations/**/obj/
+lab/simulations/out/
+
+# Editor, notebook and tool caches
+.ipynb_checkpoints/
+.pytest_cache/
+*.bak
+*.tmp
+
+# Office lock files created while a .docx/.xlsx is open
+~$*

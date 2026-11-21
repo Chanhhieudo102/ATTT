@@ -1,0 +1,62 @@
+﻿[lite] trial  0 val_mean_acc=0.8954 params=15,533 {'weight_decay': 0.0, 'transform': 'log1p', 'reduction': 4, 'lr': 0.0003, 'kernel': 3, 'hidden': 16, 'heads': 2, 'filters': 48, 'dropout': 0.2, 'batch': 128}
+[lite] trial  1 val_mean_acc=0.8725 params=126,887 {'weight_decay': 0.0001, 'transform': 'zscore', 'reduction': 8, 'lr': 0.003, 'kernel': 3, 'hidden': 64, 'heads': 1, 'filters': 48, 'dropout': 0.2, 'batch': 32}
+[lite] trial  2 val_mean_acc=0.8615 params=16,697 {'weight_decay': 1e-05, 'transform': 'zscore', 'reduction': 2, 'lr': 0.001, 'kernel': 3, 'hidden': 16, 'heads': 4, 'filters': 48, 'dropout': 0.4, 'batch': 64}
+[lite] trial  3 val_mean_acc=0.8885 params=78,247 {'weight_decay': 0.0001, 'transform': 'log1p', 'reduction': 8, 'lr': 0.003, 'kernel': 5, 'hidden': 48, 'heads': 1, 'filters': 48, 'dropout': 0.3, 'batch': 128}
+[lite] trial  4 val_mean_acc=0.8478 params=9,769 {'weight_decay': 1e-05, 'transform': 'zscore', 'reduction': 2, 'lr': 0.0003, 'kernel': 5, 'hidden': 16, 'heads': 4, 'filters': 16, 'dropout': 0.0, 'batch': 32}
+[lite] trial  5 val_mean_acc=0.8734 params=12,677 {'weight_decay': 1e-05, 'transform': 'zscore', 'reduction': 8, 'lr': 0.003, 'kernel': 5, 'hidden': 16, 'heads': 4, 'filters': 32, 'dropout': 0.3, 'batch': 32}
+[lite] trial  6 val_mean_acc=0.8502 params=14,951 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 8, 'lr': 0.0003, 'kernel': 3, 'hidden': 16, 'heads': 2, 'filters': 48, 'dropout': 0.3, 'batch': 64}
+[lite] trial  7 val_mean_acc=0.8645 params=35,793 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 2, 'lr': 0.001, 'kernel': 3, 'hidden': 32, 'heads': 4, 'filters': 32, 'dropout': 0.4, 'batch': 128}
+[lite] trial  8 val_mean_acc=0.8899 params=118,729 {'weight_decay': 0.0, 'transform': 'log1p', 'reduction': 4, 'lr': 0.003, 'kernel': 5, 'hidden': 64, 'heads': 4, 'filters': 32, 'dropout': 0.0, 'batch': 32}
+[lite] trial  9 val_mean_acc=0.8711 params=30,245 {'weight_decay': 0.0001, 'transform': 'zscore', 'reduction': 4, 'lr': 0.003, 'kernel': 3, 'hidden': 32, 'heads': 4, 'filters': 16, 'dropout': 0.2, 'batch': 64}
+[lite] trial 10 val_mean_acc=0.8663 params=15,533 {'weight_decay': 1e-05, 'transform': 'zscore', 'reduction': 4, 'lr': 0.001, 'kernel': 3, 'hidden': 16, 'heads': 2, 'filters': 48, 'dropout': 0.3, 'batch': 128}
+[lite] trial 11 val_mean_acc=0.8671 params=30,179 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 8, 'lr': 0.001, 'kernel': 3, 'hidden': 32, 'heads': 1, 'filters': 16, 'dropout': 0.2, 'batch': 64}
+[lite] trial 12 val_mean_acc=0.8592 params=41,517 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 4, 'lr': 0.0003, 'kernel': 5, 'hidden': 32, 'heads': 2, 'filters': 48, 'dropout': 0.1, 'batch': 128}
+[lite] trial 13 val_mean_acc=0.8783 params=30,697 {'weight_decay': 0.0, 'transform': 'log1p', 'reduction': 2, 'lr': 0.001, 'kernel': 5, 'hidden': 32, 'heads': 1, 'filters': 16, 'dropout': 0.0, 'batch': 64}
+[lite] trial 14 val_mean_acc=0.8534 params=9,317 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 4, 'lr': 0.0003, 'kernel': 3, 'hidden': 16, 'heads': 1, 'filters': 16, 'dropout': 0.0, 'batch': 128}
+[lite] trial 15 val_mean_acc=0.8530 params=63,395 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 8, 'lr': 0.0003, 'kernel': 3, 'hidden': 48, 'heads': 4, 'filters': 16, 'dropout': 0.0, 'batch': 32}
+[lite] trial 16 val_mean_acc=0.8792 params=9,637 {'weight_decay': 1e-05, 'transform': 'log1p', 'reduction': 4, 'lr': 0.0003, 'kernel': 5, 'hidden': 16, 'heads': 1, 'filters': 16, 'dropout': 0.3, 'batch': 128}
+[lite] trial 17 val_mean_acc=0.8867 params=63,715 {'weight_decay': 0.0, 'transform': 'log1p', 'reduction': 8, 'lr': 0.001, 'kernel': 5, 'hidden': 48, 'heads': 2, 'filters': 16, 'dropout': 0.4, 'batch': 128}
+[lite] trial 18 val_mean_acc=0.8872 params=78,829 {'weight_decay': 0.0, 'transform': 'log1p', 'reduction': 4, 'lr': 0.0003, 'kernel': 5, 'hidden': 48, 'heads': 2, 'filters': 48, 'dropout': 0.4, 'batch': 128}
+[lite] trial 19 val_mean_acc=0.8641 params=30,179 {'weight_decay': 0.0001, 'transform': 'zscore', 'reduction': 8, 'lr': 0.001, 'kernel': 3, 'hidden': 32, 'heads': 1, 'filters': 16, 'dropout': 0.1, 'batch': 64}
+[lite] trial 20 val_mean_acc=0.8644 params=70,537 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 4, 'lr': 0.001, 'kernel': 3, 'hidden': 48, 'heads': 4, 'filters': 32, 'dropout': 0.4, 'batch': 128}
+[lite] trial 21 val_mean_acc=0.8737 params=118,469 {'weight_decay': 1e-05, 'transform': 'zscore', 'reduction': 8, 'lr': 0.003, 'kernel': 5, 'hidden': 64, 'heads': 1, 'filters': 32, 'dropout': 0.3, 'batch': 32}
+[lite] trial 22 val_mean_acc=0.8813 params=30,499 {'weight_decay': 0.0001, 'transform': 'log1p', 'reduction': 8, 'lr': 0.0003, 'kernel': 5, 'hidden': 32, 'heads': 1, 'filters': 16, 'dropout': 0.2, 'batch': 32}
+[lite] trial 23 val_mean_acc=0.8546 params=16,493 {'weight_decay': 0.0, 'transform': 'zscore', 'reduction': 4, 'lr': 0.0003, 'kernel': 5, 'hidden': 16, 'heads': 4, 'filters': 48, 'dropout': 0.0, 'batch': 32}
+[lite] trial 24 val_mean_acc=0.8711 params=9,317 {'weight_decay': 0.0001, 'transform': 'zscore', 'reduction': 4, 'lr': 0.003, 'kernel': 3, 'hidden': 16, 'heads': 2, 'filters': 16, 'dropout': 0.2, 'batch': 64}
+[lite] trial 25 val_mean_acc=0.8765 params=71,057 {'weight_decay': 0.0001, 'transform': 'log1p', 'reduction': 2, 'lr': 0.001, 'kernel': 3, 'hidden': 48, 'heads': 2, 'filters': 32, 'dropout': 0.1, 'batch': 128}
+[lite] trial 26 val_mean_acc=0.8799 params=16,697 {'weight_decay': 0.0001, 'transform': 'log1p', 'reduction': 2, 'lr': 0.0003, 'kernel': 3, 'hidden': 16, 'heads': 1, 'filters': 48, 'dropout': 0.1, 'batch': 64}
+[lite] trial 27 val_mean_acc=0.8937 params=117,829 {'weight_decay': 1e-05, 'transform': 'log1p', 'reduction': 8, 'lr': 0.003, 'kernel': 3, 'hidden': 64, 'heads': 1, 'filters': 32, 'dropout': 0.4, 'batch': 64}
+[lite] trial 28 val_mean_acc=0.8621 params=77,287 {'weight_decay': 0.0001, 'transform': 'zscore', 'reduction': 8, 'lr': 0.001, 'kernel': 3, 'hidden': 48, 'heads': 1, 'filters': 48, 'dropout': 0.3, 'batch': 64}
+[lite] trial 29 val_mean_acc=0.8821 params=71,697 {'weight_decay': 0.0001, 'transform': 'log1p', 'reduction': 2, 'lr': 0.003, 'kernel': 5, 'hidden': 48, 'heads': 4, 'filters': 32, 'dropout': 0.1, 'batch': 128}
+[xgb] trial  0 val_mean_acc=0.9010 {'colsample_bytree': 0.5901348444383846, 'learning_rate': 0.02, 'max_depth': 6, 'min_child_weight': 3, 'n_estimators': 400, 'reg_lambda': 0.5, 'subsample': 0.768081441835091}
+[xgb] trial  1 val_mean_acc=0.9025 {'colsample_bytree': 0.7427135490838912, 'learning_rate': 0.05, 'max_depth': 3, 'min_child_weight': 1, 'n_estimators': 400, 'reg_lambda': 0.5, 'subsample': 0.6371249969327303}
+[xgb] trial  2 val_mean_acc=0.9003 {'colsample_bytree': 0.9448540945722329, 'learning_rate': 0.1, 'max_depth': 3, 'min_child_weight': 3, 'n_estimators': 800, 'reg_lambda': 1.0, 'subsample': 0.9428616988291318}
+[xgb] trial  3 val_mean_acc=0.9002 {'colsample_bytree': 0.5825433087976135, 'learning_rate': 0.02, 'max_depth': 3, 'min_child_weight': 3, 'n_estimators': 800, 'reg_lambda': 5.0, 'subsample': 0.9112412785229453}
+[xgb] trial  4 val_mean_acc=0.9004 {'colsample_bytree': 0.5125746382734908, 'learning_rate': 0.02, 'max_depth': 6, 'min_child_weight': 5, 'n_estimators': 400, 'reg_lambda': 5.0, 'subsample': 0.6446644927978641}
+[xgb] trial  5 val_mean_acc=0.9037 {'colsample_bytree': 0.5419765716610285, 'learning_rate': 0.05, 'max_depth': 5, 'min_child_weight': 1, 'n_estimators': 200, 'reg_lambda': 0.5, 'subsample': 0.7606705922522609}
+[xgb] trial  6 val_mean_acc=0.9014 {'colsample_bytree': 0.9239894987734872, 'learning_rate': 0.05, 'max_depth': 6, 'min_child_weight': 5, 'n_estimators': 400, 'reg_lambda': 0.5, 'subsample': 0.7859624057611028}
+[xgb] trial  7 val_mean_acc=0.9017 {'colsample_bytree': 0.8394535420017468, 'learning_rate': 0.02, 'max_depth': 3, 'min_child_weight': 5, 'n_estimators': 200, 'reg_lambda': 2.0, 'subsample': 0.6254745723098621}
+[xgb] trial  8 val_mean_acc=0.9022 {'colsample_bytree': 0.6823078214980205, 'learning_rate': 0.1, 'max_depth': 6, 'min_child_weight': 3, 'n_estimators': 800, 'reg_lambda': 1.0, 'subsample': 0.7161054668541248}
+[xgb] trial  9 val_mean_acc=0.9035 {'colsample_bytree': 0.8950505617168947, 'learning_rate': 0.02, 'max_depth': 3, 'min_child_weight': 1, 'n_estimators': 200, 'reg_lambda': 0.5, 'subsample': 0.929414455938394}
+[xgb] trial 10 val_mean_acc=0.9009 {'colsample_bytree': 0.5253401933665705, 'learning_rate': 0.02, 'max_depth': 6, 'min_child_weight': 5, 'n_estimators': 200, 'reg_lambda': 5.0, 'subsample': 0.8931301345392704}
+[xgb] trial 11 val_mean_acc=0.9000 {'colsample_bytree': 0.5314438119303502, 'learning_rate': 0.05, 'max_depth': 3, 'min_child_weight': 5, 'n_estimators': 800, 'reg_lambda': 5.0, 'subsample': 0.9804431788166396}
+[xgb] trial 12 val_mean_acc=0.9020 {'colsample_bytree': 0.6673701701048933, 'learning_rate': 0.02, 'max_depth': 3, 'min_child_weight': 1, 'n_estimators': 400, 'reg_lambda': 1.0, 'subsample': 0.9226267163710884}
+[xgb] trial 13 val_mean_acc=0.9006 {'colsample_bytree': 0.8822455482722358, 'learning_rate': 0.1, 'max_depth': 3, 'min_child_weight': 5, 'n_estimators': 400, 'reg_lambda': 5.0, 'subsample': 0.6912261454982878}
+[xgb] trial 14 val_mean_acc=0.9014 {'colsample_bytree': 0.7287058395664185, 'learning_rate': 0.1, 'max_depth': 6, 'min_child_weight': 3, 'n_estimators': 400, 'reg_lambda': 2.0, 'subsample': 0.9895400862862771}
+[xgb] trial 15 val_mean_acc=0.9030 {'colsample_bytree': 0.5447923819033067, 'learning_rate': 0.05, 'max_depth': 6, 'min_child_weight': 1, 'n_estimators': 200, 'reg_lambda': 1.0, 'subsample': 0.9038597870208694}
+[xgb] trial 16 val_mean_acc=0.9040 {'colsample_bytree': 0.7263795822459989, 'learning_rate': 0.1, 'max_depth': 4, 'min_child_weight': 3, 'n_estimators': 800, 'reg_lambda': 0.5, 'subsample': 0.763734332230773}
+[xgb] trial 17 val_mean_acc=0.9015 {'colsample_bytree': 0.9620165668199674, 'learning_rate': 0.02, 'max_depth': 3, 'min_child_weight': 5, 'n_estimators': 800, 'reg_lambda': 2.0, 'subsample': 0.9445971627475513}
+[xgb] trial 18 val_mean_acc=0.9028 {'colsample_bytree': 0.6288787636759362, 'learning_rate': 0.05, 'max_depth': 4, 'min_child_weight': 3, 'n_estimators': 200, 'reg_lambda': 1.0, 'subsample': 0.6147696418701386}
+[xgb] trial 19 val_mean_acc=0.9024 {'colsample_bytree': 0.7972149637299413, 'learning_rate': 0.1, 'max_depth': 6, 'min_child_weight': 5, 'n_estimators': 200, 'reg_lambda': 1.0, 'subsample': 0.8845713237470006}
+[final] seed=42 hybrid(tuned) test acc@5s=0.9021
+[final] seed=43 hybrid(tuned) test acc@5s=0.9271
+[final] seed=44 hybrid(tuned) test acc@5s=0.9271
+                                    model split  mean_acc_0_19    acc_4s    acc_5s   acc_19s  best_acc  best_t
+0          Hybrid CNN-SE-BiLSTM + XGBoost  test       0.926743  0.905310  0.930902  0.949456  0.956494      15
+1          Hybrid CNN-SE-BiLSTM + XGBoost   val       0.902683  0.905691  0.900271  0.910027  0.912737      18
+2  Hybrid CNN-SE-BiLSTM + XGBoost (tuned)  test       0.918426  0.905310  0.918746  0.939859  0.946897      17
+3  Hybrid CNN-SE-BiLSTM + XGBoost (tuned)   val       0.901111  0.903523  0.892683  0.904607  0.912737      15
+4                      LiteSE-BiLSTM-Attn  test       0.898433  0.888036  0.896993  0.938580  0.938580      19
+5                      LiteSE-BiLSTM-Attn   val       0.861707  0.855285  0.862331  0.875881  0.875881      14
+6              LiteSE-BiLSTM-Attn (tuned)  test       0.893762  0.889315  0.895074  0.913628  0.931542      16
+7              LiteSE-BiLSTM-Attn (tuned)   val       0.882520  0.881301  0.884553  0.893767  0.897561      14
