@@ -1,0 +1,22 @@
+﻿{"train": {"n": 3484, "benign": 1814, "malicious": 1670}, "val": {"n": 615, "benign": 320, "malicious": 295}, "test": {"n": 521, "benign": 206, "malicious": 315}, "overlap_ids": 0}
+[deep] seed=42 GRU-A (paper): params=237,245 epochs=53 time=208s test acc@4s=0.8983 @5s=0.9060 @19s=0.9271
+[deep] seed=42 GRU-B (paper): params=795,477 epochs=112 time=411s test acc@4s=0.9021 @5s=0.9098 @19s=0.9443
+[deep] seed=42 GRU-C (paper): params=350,611 epochs=39 time=83s test acc@4s=0.8848 @5s=0.8868 @19s=0.9328
+[deep] seed=42 LiteSE-BiLSTM-Attn: params=35,273 epochs=41 time=26s test acc@4s=0.8868 @5s=0.8944 @19s=0.9309
+[deep] seed=42 BiLSTM-only (ablation): params=11,329 epochs=112 time=38s test acc@4s=0.8829 @5s=0.9060 @19s=0.9463
+[deep] seed=42 CNN-SE-only (ablation): params=1,673 epochs=91 time=24s test acc@4s=0.8925 @5s=0.8964 @19s=0.9040
+[deep] seed=42 Hybrid: test acc@5s=0.9290 @19s=0.9501
+[deep] seed=43 GRU-A (paper): params=237,245 epochs=53 time=153s test acc@4s=0.8983 @5s=0.9060 @19s=0.9367
+[deep] seed=43 GRU-B (paper): params=795,477 epochs=112 time=359s test acc@4s=0.8887 @5s=0.9213 @19s=0.9482
+[deep] seed=43 GRU-C (paper): params=350,611 epochs=39 time=75s test acc@4s=0.8714 @5s=0.8848 @19s=0.9405
+[deep] seed=43 LiteSE-BiLSTM-Attn: params=35,273 epochs=35 time=22s test acc@4s=0.8848 @5s=0.8925 @19s=0.9463
+[deep] seed=43 BiLSTM-only (ablation): params=11,329 epochs=128 time=47s test acc@4s=0.9002 @5s=0.9079 @19s=0.9424
+[deep] seed=43 CNN-SE-only (ablation): params=1,673 epochs=52 time=16s test acc@4s=0.8810 @5s=0.8810 @19s=0.9079
+[deep] seed=43 Hybrid: test acc@5s=0.9328 @19s=0.9482
+[deep] seed=44 GRU-A (paper): params=237,245 epochs=53 time=161s test acc@4s=0.9136 @5s=0.9251 @19s=0.9424
+[deep] seed=44 GRU-B (paper): params=795,477 epochs=112 time=365s test acc@4s=0.8983 @5s=0.9328 @19s=0.9501
+[deep] seed=44 GRU-C (paper): params=350,611 epochs=39 time=75s test acc@4s=0.8868 @5s=0.9117 @19s=0.9635
+[deep] seed=44 LiteSE-BiLSTM-Attn: params=35,273 epochs=34 time=22s test acc@4s=0.8925 @5s=0.9040 @19s=0.9386
+[deep] seed=44 BiLSTM-only (ablation): params=11,329 epochs=75 time=25s test acc@4s=0.8772 @5s=0.9079 @19s=0.9424
+[deep] seed=44 CNN-SE-only (ablation): params=1,673 epochs=72 time=19s test acc@4s=0.8714 @5s=0.8772 @19s=0.9098
+[deep] seed=44 Hybrid: test acc@5s=0.9309 @19s=0.9501

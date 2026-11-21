@@ -1,0 +1,272 @@
+﻿{"train": {"n": 3484, "benign": 1814, "malicious": 1670}, "val": {"n": 615, "benign": 320, "malicious": 295}, "test": {"n": 521, "benign": 206, "malicious": 315}, "overlap_ids": 0}
+[classical] RandomForest: test acc@5s=0.9463 acc@19s=0.9635 (196s)
+[classical] DecisionTree(J48): test acc@5s=0.8868 acc@19s=0.8445 (21s)
+[classical] GBDT: test acc@5s=0.9232 acc@19s=0.9386 (398s)
+[classical] SVM: test acc@5s=0.9155 acc@19s=0.9443 (39s)
+[classical] NaiveBayes: test acc@5s=0.7927 acc@19s=0.6180 (3s)
+[classical] KNN: test acc@5s=0.9136 acc@19s=0.9232 (4s)
+.\.venv\Scripts\python.exe : 
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+At line:1 char:302
++ ... tch {} } }; .\.venv\Scripts\python.exe scripts\cardiff_paper_benchmar ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\BKDN_KHDL\HK... converged yet.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+D:\BKDN_KHDL\HKI9_BDKN\ATTT\CK\ATTT\.venv\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:785: 
+ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
+  warnings.warn(
+[classical] MLP: test acc@5s=0.9194 acc@19s=0.9290 (514s)
+[classical] AdaBoost: test acc@5s=0.7620 acc@19s=0.8215 (82s)
+[classical] XGBoost: test acc@5s=0.9424 acc@19s=0.9616 (123s)
